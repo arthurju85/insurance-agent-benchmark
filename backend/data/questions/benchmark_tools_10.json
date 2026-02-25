@@ -1,0 +1,318 @@
+{
+  "metadata": {
+    "set_id": "tools_v1",
+    "name": "工具调用维度题库",
+    "description": "测试Agent的API调用、工具使用和系统对接能力",
+    "version": "1.0.0",
+    "total_score": 1000,
+    "created_at": "2026-02-23"
+  },
+  "questions": [
+    {
+      "question_id": "INS-TOOL-001",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "easy",
+      "title": "保单查询工具链",
+      "content": "【任务】\n查询保单号P20240315001的现金价值\n\n【可用工具】\n1. authenticate_user(phone: str, id_last4: str) -> token\n2. query_policy_basic(token: str, policy_no: str) -> {policy_id, status, product_name}\n3. query_cash_value(token: str, policy_id: str) -> {cash_value, currency}\n\n请写出完成此任务需要的工具调用序列和参数。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tool_calls": {"type": "array"},
+            "final_answer": {"type": "object"}
+          },
+          "required": ["tool_calls"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["authenticate_user", "query_policy_basic", "query_cash_value"],
+        "tool_sequence_strict": true
+      },
+      "ground_truth": {
+        "tool_calls": [
+          {"tool": "authenticate_user", "params": {"phone": "...", "id_last4": "..."}},
+          {"tool": "query_policy_basic", "params": {"token": "...", "policy_no": "P20240315001"}},
+          {"tool": "query_cash_value", "params": {"token": "...", "policy_id": "..."}}
+        ]
+      },
+      "score": 100,
+      "tags": ["工具链", "保单查询", "API调用"]
+    },
+    {
+      "question_id": "INS-TOOL-002",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "medium",
+      "title": "保费计算多工具协作",
+      "content": "【任务】\n计算30岁男性，购买100万重疾险，交20年，附加癌症二次赔付的保费\n\n【可用工具】\n1. get_base_rate(age: int, gender: str, coverage: int) -> base_premium\n2. get_rider_rate(rider_type: str, base_coverage: int) -> rider_premium\n3. apply_discount(payment_years: int, base_amount: float) -> final_premium\n\n【问题】\n1. 需要调用哪些工具？\n2. 正确的调用顺序是什么？\n3. 最终保费是多少？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tool_sequence": {"type": "array"},
+            "calculations": {"type": "object"},
+            "final_premium": {"type": "number"}
+          },
+          "required": ["tool_sequence", "final_premium"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["get_base_rate", "get_rider_rate", "apply_discount"],
+        "tool_sequence_strict": true
+      },
+      "ground_truth": {
+        "tool_sequence": ["get_base_rate", "get_rider_rate", "apply_discount"],
+        "final_premium": "根据费率计算"
+      },
+      "score": 100,
+      "tags": ["多工具协作", "保费计算", "工具链"]
+    },
+    {
+      "question_id": "INS-TOOL-003",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "hard",
+      "title": "核保决策工具调用",
+      "content": "【任务】\n为客户进行智能核保评估\n\n【客户信息】\n- 35岁男性，BMI 28.5\n- 血压135/85mmHg\n- 空腹血糖6.2mmol/L\n- 父亲有糖尿病史\n\n【可用工具】\n1. check_bmi(height: float, weight: float) -> {bmi, risk_level}\n2. check_blood_pressure(systolic: int, diastolic: int) -> {category, risk}\n3. check_blood_sugar(fasting_glucose: float) -> {category, risk}\n4. assess_family_history(conditions: list) -> {risk_factors}\n5. calculate_loading(risk_levels: list) -> {loading_rate, decision}\n\n【问题】\n1. 需要调用哪些工具？\n2. 各工具返回的风险等级是什么？\n3. 最终核保结论是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tools_called": {"type": "array"},
+            "risk_assessment": {"type": "object"},
+            "underwriting_decision": {"type": "string"}
+          },
+          "required": ["tools_called", "underwriting_decision"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["check_bmi", "check_blood_pressure", "check_blood_sugar", "assess_family_history", "calculate_loading"]
+      },
+      "ground_truth": {
+        "tools_called": ["check_bmi", "check_blood_pressure", "check_blood_sugar", "assess_family_history", "calculate_loading"],
+        "underwriting_decision": "加费承保"
+      },
+      "score": 100,
+      "tags": ["核保工具", "风险评估", "多工具协作"]
+    },
+    {
+      "question_id": "INS-TOOL-004",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "medium",
+      "title": "理赔材料清单生成",
+      "content": "【任务】\n为客户生成理赔材料清单\n\n【事故类型】：重大疾病理赔\n【可用工具】\n1. get_claim_type(incident_description: str) -> {claim_type, required_docs}\n2. check_policy_coverage(policy_no: str, claim_type: str) -> {covered, exclusions}\n3. generate_doc_list(claim_type: str, policy_info: dict) -> {documents}\n4. validate_doc_completeness(doc_list: list) -> {complete, missing}\n\n【问题】\n1. 重疾理赔需要哪些材料？\n2. 正确的工具调用流程是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tool_flow": {"type": "array"},
+            "required_documents": {"type": "array"}
+          },
+          "required": ["tool_flow", "required_documents"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["get_claim_type", "check_policy_coverage", "generate_doc_list"],
+        "must_contain_keywords": ["诊断证明", "病历", "身份证明", "保单"]
+      },
+      "ground_truth": {
+        "tool_flow": ["get_claim_type", "check_policy_coverage", "generate_doc_list"],
+        "required_documents": ["理赔申请书", "诊断证明", "病历资料", "身份证明", "银行账户"]
+      },
+      "score": 100,
+      "tags": ["理赔工具", "材料清单", "流程工具"]
+    },
+    {
+      "question_id": "INS-TOOL-005",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "hard",
+      "title": "客户画像工具调用",
+      "content": "【任务】\n为以下客户生成画像和产品推荐\n\n【客户信息】\n- 用户ID: U12345\n- 年龄: 32岁\n- 职业: 互联网产品经理\n- 家庭状况: 已婚，有1岁孩子\n- 年收入: 40万\n\n【可用工具】\n1. fetch_user_profile(user_id: str) -> {demographics, history, preferences}\n2. analyze_risk_profile(age: int, occupation: str, income: float) -> {risk_tolerance, priorities}\n3. get_product_recommendations(profile: dict, constraints: dict) -> {products}\n4. calculate_coverage_gap(current_policies: list, profile: dict) -> {gaps}",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tool_calls": {"type": "array"},
+            "customer_profile": {"type": "object"},
+            "recommendations": {"type": "array"}
+          },
+          "required": ["tool_calls", "recommendations"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["fetch_user_profile", "analyze_risk_profile", "get_product_recommendations"],
+        "must_contain_keywords": ["重疾险", "医疗险", "教育金"]
+      },
+      "ground_truth": {
+        "tool_calls": ["fetch_user_profile", "analyze_risk_profile", "get_product_recommendations"],
+        "recommendations": ["重疾险", "医疗险", "意外险", "教育金保险"]
+      },
+      "score": 100,
+      "tags": ["客户画像", "产品推荐", "数据分析"]
+    },
+    {
+      "question_id": "INS-TOOL-006",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "medium",
+      "title": "费率表查询与插值",
+      "content": "【任务】\n查询37岁男性的重疾险费率\n\n【费率表（每万元保额年保费）】\n- 35岁: 35元\n- 40岁: 45元\n\n【可用工具】\n1. query_rate_table(age: int, gender: str, product_code: str) -> {rate, exact_match}\n2. interpolate_rate(age: int, rate_table: list) -> {interpolated_rate, method}\n3. calculate_premium(coverage: int, rate: float) -> {annual_premium, monthly_premium}\n\n【问题】\n1. 是否需要插值计算？\n2. 37岁的费率是多少？\n3. 50万保额的年保费是多少？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "interpolation_needed": {"type": "boolean"},
+            "rate_at_37": {"type": "number"},
+            "annual_premium": {"type": "number"},
+            "calculation_process": {"type": "string"}
+          },
+          "required": ["interpolation_needed", "rate_at_37", "annual_premium"]
+        }
+      },
+      "validation_rules": {
+        "numeric_path": "annual_premium",
+        "numeric_tolerance": 100,
+        "must_contain_keywords": ["插值", "线性", "39"]
+      },
+      "ground_truth": {
+        "interpolation_needed": true,
+        "rate_at_37": 39,
+        "annual_premium": 19500,
+        "calculation_process": "线性插值：(45-35)/(40-35)*(37-35)+35=39; 50万×39=19500"
+      },
+      "score": 100,
+      "tags": ["费率查询", "数据插值", "计算工具"]
+    },
+    {
+      "question_id": "INS-TOOL-007",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "hard",
+      "title": "智能理赔审核工具链",
+      "content": "【任务】\n审核一起理赔申请\n\n【理赔信息】\n- 保单号: P202401001\n- 出险类型: 重大疾病\n- 诊断: 急性心肌梗死\n- 申请日期: 2024-06-15\n- 投保日期: 2024-01-01\n\n【可用工具】\n1. verify_policy_validity(policy_no: str) -> {valid, status, issue_date}\n2. check_waiting_period(policy_no: str, incident_date: str) -> {passed, days}\n3. validate_diagnosis(diagnosis: str, icd_codes: list) -> {valid, severity}\n4. check_exclusions(policy_no: str, diagnosis: str) -> {excluded, reason}\n5. calculate_benefit(policy_no: str, diagnosis: str) -> {amount, currency}\n\n【问题】\n1. 需要调用哪些工具进行审核？\n2. 审核流程是什么？\n3. 此案件的审核结论是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "audit_flow": {"type": "array"},
+            "check_results": {"type": "object"},
+            "conclusion": {"type": "string"}
+          },
+          "required": ["audit_flow", "conclusion"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["verify_policy_validity", "check_waiting_period", "validate_diagnosis", "check_exclusions"]
+      },
+      "ground_truth": {
+        "audit_flow": ["verify_policy_validity", "check_waiting_period", "validate_diagnosis", "check_exclusions", "calculate_benefit"],
+        "conclusion": "正常赔付"
+      },
+      "score": 100,
+      "tags": ["理赔审核", "流程工具", "业务规则"]
+    },
+    {
+      "question_id": "INS-TOOL-008",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "medium",
+      "title": "保单状态变更工具调用",
+      "content": "【任务】\n处理客户保单复效申请\n\n【客户请求】\n保单因未交费已失效，客户申请复效\n\n【可用工具】\n1. query_policy_status(policy_no: str) -> {status, lapse_date, cash_value}\n2. check_reinstatement_eligibility(policy_no: str, current_date: str) -> {eligible, conditions}\n3. calculate_reinstatement_cost(policy_no: str, lapse_period: int) -> {premium_due, interest, fees}\n4. process_reinstatement(policy_no: str, payment: dict) -> {success, new_status}\n5. update_health_declaration(policy_no: str, declaration: dict) -> {updated}",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "process_steps": {"type": "array"},
+            "required_actions": {"type": "array"},
+            "eligibility_checks": {"type": "array"}
+          },
+          "required": ["process_steps"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["query_policy_status", "check_reinstatement_eligibility", "calculate_reinstatement_cost"]
+      },
+      "ground_truth": {
+        "process_steps": ["query_policy_status", "check_reinstatement_eligibility", "calculate_reinstatement_cost", "update_health_declaration", "process_reinstatement"],
+        "required_actions": ["补交保费", "支付利息", "重新健康告知"]
+      },
+      "score": 100,
+      "tags": ["保单复效", "状态变更", "流程工具"]
+    },
+    {
+      "question_id": "INS-TOOL-009",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "hard",
+      "title": "复杂查询-多条件筛选",
+      "content": "【任务】\n为客户筛选合适的产品\n\n【客户需求】\n- 35岁女性\n- 预算：年保费5000元以内\n- 需求：重疾+医疗\n- 偏好：知名保险公司\n- 缴费期：20年\n\n【可用工具】\n1. search_products(criteria: dict) -> {products}\n2. filter_by_budget(products: list, max_budget: float) -> {filtered}\n3. filter_by_company(products: list, company_tier: str) -> {filtered}\n4. compare_products(product_ids: list, dimensions: list) -> {comparison}\n5. rank_by_suitability(products: list, profile: dict) -> {ranked}\n\n【问题】\n1. 正确的工具调用顺序是什么？\n2. 每一步的筛选条件是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "tool_sequence": {"type": "array"},
+            "filter_conditions": {"type": "object"},
+            "expected_results": {"type": "array"}
+          },
+          "required": ["tool_sequence", "filter_conditions"]
+        }
+      },
+      "validation_rules": {
+        "required_tools": ["search_products", "filter_by_budget", "filter_by_company", "compare_products", "rank_by_suitability"]
+      },
+      "ground_truth": {
+        "tool_sequence": ["search_products", "filter_by_budget", "filter_by_company", "compare_products", "rank_by_suitability"],
+        "filter_conditions": {
+          "budget": 5000,
+          "company_tier": "知名",
+          "product_types": ["重疾险", "医疗险"]
+        }
+      },
+      "score": 100,
+      "tags": ["产品筛选", "多条件查询", "推荐工具"]
+    },
+    {
+      "question_id": "INS-TOOL-010",
+      "dimension": "tools",
+      "question_type": "tool_use",
+      "difficulty": "medium",
+      "title": "错误处理与重试",
+      "content": "【任务】\n调用工具查询保单信息，处理可能的错误\n\n【场景】\n调用query_policy_basic时返回错误：\"Policy not found\"\n\n【可能原因】\n1. 保单号输入错误\n2. 系统暂时不可用\n3. 保单不存在\n\n【可用工具】\n1. query_policy_basic(policy_no: str) -> {result} 或 {error}\n2. validate_policy_format(policy_no: str) -> {valid, normalized}\n3. search_similar_policies(hint: str) -> {suggestions}\n4. log_error(error: dict) -> {logged}\n5. fallback_query(backup_db: str, policy_no: str) -> {result}\n\n【问题】\n1. Agent应如何处理这个错误？\n2. 正确的处理流程是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "error_handling_steps": {"type": "array"},
+            "fallback_strategy": {"type": "string"},
+            "user_response": {"type": "string"}
+          },
+          "required": ["error_handling_steps"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["验证", "重试", "备用", "日志"],
+        "must_contain_any": ["format", "normalize", "suggest"]
+      },
+      "ground_truth": {
+        "error_handling_steps": ["validate_policy_format", "log_error", "search_similar_policies", "fallback_query"],
+        "fallback_strategy": "验证输入格式→搜索相似保单→尝试备用数据源",
+        "user_response": "保单号可能输入有误，请确认或提供更多信息"
+      },
+      "score": 100,
+      "tags": ["错误处理", "容错机制", "工具鲁棒性"]
+    }
+  ]
+}

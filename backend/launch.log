@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/launch.py", line 27, in <module>
+    from db.question_repo import get_repository
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/src/db/question_repo.py", line 10, in <module>
+    from ..models.question import Question, QuestionSet
+ImportError: attempted relative import beyond top-level package
+============================================================
+🚀 保险智能体评测系统 - 后端服务
+============================================================
+
+正在加载数据模块...
+❌ 启动失败: attempted relative import beyond top-level package

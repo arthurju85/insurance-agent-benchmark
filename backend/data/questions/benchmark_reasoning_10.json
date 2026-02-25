@@ -1,0 +1,334 @@
+{
+  "metadata": {
+    "set_id": "reasoning_v1",
+    "name": "专业推理能力维度题库",
+    "description": "测试Agent的理赔判断、核保评估、精算计算等推理能力",
+    "version": "1.0.0",
+    "total_score": 1000,
+    "created_at": "2026-02-23"
+  },
+  "questions": [
+    {
+      "question_id": "INS-REA-001",
+      "dimension": "reasoning",
+      "question_type": "calculation",
+      "difficulty": "medium",
+      "title": "重疾险保费计算",
+      "content": "【保费计算场景】\n\n被保险人：35岁男性，非吸烟\n投保产品：终身重疾险\n基本保额：50万元\n缴费期限：20年\n\n费率表（每万元保额年保费）：\n- 30岁男性：28元\n- 35岁男性：35元\n- 40岁男性：45元\n\n附加选项：\n- 癌症二次赔付附加险：基础保费×15%\n- 投保人豁免：基础保费×8%\n\n【问题】\n1. 基础年保费是多少？\n2. 如果附加癌症二次赔付和投保人豁免，总年保费是多少？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "base_premium": {"type": "number"},
+            "total_premium": {"type": "number"},
+            "calculation_process": {"type": "string"}
+          },
+          "required": ["base_premium", "total_premium"]
+        }
+      },
+      "validation_rules": {
+        "numeric_path": "total_premium",
+        "numeric_tolerance": 50,
+        "must_contain_keywords": ["1750", "2105"]
+      },
+      "ground_truth": {
+        "base_premium": 1750,
+        "total_premium": 2105,
+        "calculation_process": "基础：50×35=1750；附加后：1750×(1+0.15+0.08)=2105"
+      },
+      "score": 100,
+      "tags": ["保费计算", "重疾险", "费率表"]
+    },
+    {
+      "question_id": "INS-REA-002",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "未如实告知判断",
+      "content": "【案情】\n- 投保时间：2023年6月1日（重疾险）\n- 健康告知询问：\"过去2年内是否有过住院手术？\"，投保人回答：\"否\"\n- 理赔申请：2024年5月确诊肺癌申请理赔\n- 调查发现：2022年8月因\"阑尾炎\"住院手术3天\n\n【问题】\n1. 保险公司应如何处理？\n2. 请说明理由和法律依据。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {"type": "string"},
+            "reasoning": {"type": "string"},
+            "legal_basis": {"type": "string"}
+          },
+          "required": ["conclusion", "reasoning"]
+        }
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": ["正常赔付", "赔付", "理赔"],
+        "must_contain_keywords": ["不可抗辩", "两年", "第十六条", "阑尾炎"],
+        "prohibited_keywords": ["拒赔", "解除"]
+      },
+      "ground_truth": {
+        "conclusion": "正常赔付",
+        "reasoning": "合同成立超过2年，适用不可抗辩条款；且阑尾炎与肺癌无医学关联",
+        "legal_basis": "保险法第十六条"
+      },
+      "score": 100,
+      "tags": ["理赔判断", "如实告知", "不可抗辩"]
+    },
+    {
+      "question_id": "INS-REA-003",
+      "dimension": "reasoning",
+      "question_type": "calculation",
+      "difficulty": "hard",
+      "title": "年金险IRR计算",
+      "content": "【产品信息】\n- 交费期：5年，年交10万元\n- 第5-9年：每年返还2万元\n- 第10年起：每年返还1.5万元直至终身\n- 保证领取期：20年\n\n【问题】\n如果被保险人在第20年身故，计算该产品的内部收益率（IRR）近似值。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "irr_estimate": {"type": "number"},
+            "calculation_logic": {"type": "string"}
+          },
+          "required": ["irr_estimate"]
+        }
+      },
+      "validation_rules": {
+        "numeric_path": "irr_estimate",
+        "numeric_tolerance": 0.005,
+        "must_contain_keywords": ["现金流", "2.5%", "3%"]
+      },
+      "ground_truth": {
+        "irr_estimate": 0.028,
+        "calculation_logic": "总投入50万，20年累计返还约50万，IRR约2.8%"
+      },
+      "score": 100,
+      "tags": ["IRR计算", "年金险", "收益率"]
+    },
+    {
+      "question_id": "INS-REA-004",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "核保风险评估",
+      "content": "【被保险人信息】\n- 年龄：35岁男性\n- BMI：28.5\n- 体检报告：血尿酸480μmol/L（参考值<420），血压135/85mmHg，空腹血糖6.2mmol/L\n- 既往史：父亲55岁确诊2型糖尿病\n- 投保产品：100万保额重疾险\n\n【问题】\n请进行核保风险评估，给出核保结论（标体/加费/除外/延期/拒保）及理由。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "underwriting_decision": {"type": "string"},
+            "risk_factors": {"type": "array"},
+            "additional_requirements": {"type": "array"}
+          },
+          "required": ["underwriting_decision", "risk_factors"]
+        }
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": ["加费", "加费承保", "loading"],
+        "must_contain_keywords": ["高尿酸", "空腹血糖", "家族史", "糖化血红蛋白"]
+      },
+      "ground_truth": {
+        "underwriting_decision": "加费承保",
+        "risk_factors": ["高尿酸", "BMI偏高", "空腹血糖受损", "糖尿病家族史"],
+        "additional_requirements": ["糖化血红蛋白检查"]
+      },
+      "score": 100,
+      "tags": ["核保评估", "风险评估", "医学指标"]
+    },
+    {
+      "question_id": "INS-REA-005",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "责任免除判定",
+      "content": "【案情】\n- 保单：意外险，保额50万\n- 事故：被保险人在家中修理电路时不慎触电身亡\n- 调查发现：被保险人血液中酒精含量为120mg/100ml（醉酒标准≥80mg/100ml）\n- 免责条款：\"被保险人醉酒或吸毒导致的意外伤害，本公司不承担给付保险金的责任\"\n\n【问题】\n保险公司是否应赔付？请说明理由。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {"type": "string"},
+            "reasoning": {"type": "string"},
+            "causation_analysis": {"type": "string"}
+          },
+          "required": ["conclusion", "reasoning"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["因果关系", "近因原则", "醉酒", "直接原因"],
+        "must_contain_any": ["赔付", "拒赔"]
+      },
+      "ground_truth": {
+        "conclusion": "需进一步调查因果关系",
+        "reasoning": "需判断醉酒与触电之间是否存在直接因果关系",
+        "causation_analysis": "如醉酒导致判断力下降是事故直接原因，则免责成立；否则应赔付"
+      },
+      "score": 100,
+      "tags": ["责任免除", "近因原则", "因果关系"]
+    },
+    {
+      "question_id": "INS-REA-006",
+      "dimension": "reasoning",
+      "question_type": "calculation",
+      "difficulty": "medium",
+      "title": "医疗险赔付计算",
+      "content": "【保单信息】\n- 住院医疗险，保额10万元\n- 免赔额：1万元（社保报销不计入）\n- 赔付比例：社保内100%，社保外80%\n- 年度累计限额：10万元\n\n【就医情况】\n- 住院总费用：8万元\n- 社保目录内费用：5万元\n- 社保目录外费用：3万元\n- 社保实际报销：3.5万元\n\n【问题】\n保险公司应赔付多少？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "reimbursement_amount": {"type": "number"},
+            "calculation_breakdown": {"type": "object"}
+          },
+          "required": ["reimbursement_amount"]
+        }
+      },
+      "validation_rules": {
+        "numeric_path": "reimbursement_amount",
+        "numeric_tolerance": 100,
+        "must_contain_keywords": ["免赔额", "社保内", "社保外"]
+      },
+      "ground_truth": {
+        "reimbursement_amount": 29000,
+        "calculation_breakdown": {
+          "社保内自付": 15000,
+          "社保外": 30000,
+          "免赔额扣除": 10000,
+          "赔付": "(15000-10000)×100% + 30000×80% = 29000"
+        }
+      },
+      "score": 100,
+      "tags": ["医疗险", "赔付计算", "社保结算"]
+    },
+    {
+      "question_id": "INS-REA-007",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "自杀条款适用",
+      "content": "【案情】\n- 投保时间：2022年3月1日\n- 被保险人为25岁成年人\n- 事故：2024年4月15日被保险人坠楼身亡\n- 调查：被保险人近期工作压力巨大，有抑郁症就诊记录，现场无他杀迹象\n- 合同成立已超过2年\n\n【问题】\n1. 是否适用自杀免责条款？\n2. 保险公司是否应赔付？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "suicide_exclusion_applicable": {"type": "boolean"},
+            "conclusion": {"type": "string"},
+            "reasoning": {"type": "string"}
+          },
+          "required": ["suicide_exclusion_applicable", "conclusion"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["两年", "自杀", "无行为能力"],
+        "must_contain_any": ["赔付", "拒赔"]
+      },
+      "ground_truth": {
+        "suicide_exclusion_applicable": false,
+        "conclusion": "应赔付",
+        "reasoning": "合同成立超过2年，自杀条款不适用；抑郁症不等于无行为能力"
+      },
+      "score": 100,
+      "tags": ["自杀条款", "免责适用", "时间判断"]
+    },
+    {
+      "question_id": "INS-REA-008",
+      "dimension": "reasoning",
+      "question_type": "calculation",
+      "difficulty": "medium",
+      "title": "现金价值计算",
+      "content": "【保单信息】\n- 终身寿险，保额100万\n- 年交保费2万元，已交5年\n- 现金价值表显示第5年末现金价值为6万元\n\n【问题】\n1. 如果客户现在退保，能拿回多少？\n2. 如果客户申请保单贷款，最多能贷多少？\n3. 如果客户申请减额交清（假设净保费为5万元），新保额大约是多少？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "surrender_value": {"type": "number"},
+            "max_loan": {"type": "number"},
+            "reduced_face_amount": {"type": "number"}
+          },
+          "required": ["surrender_value", "max_loan", "reduced_face_amount"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["60000", "48000", "现金价值", "80%"],
+        "numeric_tolerance": 5000
+      },
+      "ground_truth": {
+        "surrender_value": 60000,
+        "max_loan": 48000,
+        "reduced_face_amount": 250000,
+        "reasoning": "退保拿现金价值6万；贷款最多80%即4.8万；减额交清按净保费比例计算新保额"
+      },
+      "score": 100,
+      "tags": ["现金价值", "退保", "保单贷款"]
+    },
+    {
+      "question_id": "INS-REA-009",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "多险种交叉赔付",
+      "content": "【案情】\n客户张某购买了以下保险：\n1. 重疾险A公司：保额50万\n2. 医疗险B公司：保额100万（免赔额1万，100%赔付）\n3. 意外险C公司：身故保额100万，伤残保额100万\n\n事故：张某因交通事故导致：\n- 双目失明（重疾标准）\n- 伤残等级评定为2级\n- 住院治疗费用30万元\n\n【问题】\n各保险公司分别应如何赔付？张某总共能获得多少赔付？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "company_a_payment": {"type": "number"},
+            "company_b_payment": {"type": "number"},
+            "company_c_payment": {"type": "number"},
+            "total_payment": {"type": "number"}
+          },
+          "required": ["company_a_payment", "company_b_payment", "company_c_payment", "total_payment"]
+        }
+      },
+      "validation_rules": {
+        "numeric_path": "total_payment",
+        "numeric_tolerance": 5000,
+        "must_contain_keywords": ["重疾", "伤残", "医疗费用", "累积赔付"]
+      },
+      "ground_truth": {
+        "company_a_payment": 500000,
+        "company_b_payment": 290000,
+        "company_c_payment": 900000,
+        "total_payment": 1690000,
+        "reasoning": "重疾赔付50万+医疗费报销29万+2级伤残赔付90万"
+      },
+      "score": 100,
+      "tags": ["多险种", "交叉赔付", "保险组合"]
+    },
+    {
+      "question_id": "INS-REA-010",
+      "dimension": "reasoning",
+      "question_type": "case_analysis",
+      "difficulty": "expert",
+      "title": "保险利益认定",
+      "content": "【案情】\n- 投保人：王某（妻子）\n- 被保险人：李某（丈夫）\n- 受益人：王某（妻子，唯一受益人）\n- 事故：李某意外身亡\n- 调查发现：王某与李某已分居3年，正在办理离婚诉讼，李某生前已立下遗嘱指定其父母为保险受益人\n\n【问题】\n1. 王某是否具有保险利益？\n2. 保险金应给付给谁？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "insurable_interest": {"type": "boolean"},
+            "beneficiary_valid": {"type": "boolean"},
+            "conclusion": {"type": "string"},
+            "legal_analysis": {"type": "string"}
+          },
+          "required": ["insurable_interest", "conclusion"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["配偶", "保险利益", "法定受益人", "遗产"],
+        "must_contain_any": ["父母", "王某", "分割"]
+      },
+      "ground_truth": {
+        "insurable_interest": true,
+        "beneficiary_valid": false,
+        "conclusion": "保险金作为李某遗产，由其法定继承人（父母、王某）分割",
+        "legal_analysis": "夫妻关系存续期间具有保险利益；遗嘱不能变更保险受益人"
+      },
+      "score": 100,
+      "tags": ["保险利益", "受益人", "遗产继承"]
+    }
+  ]
+}

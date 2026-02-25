@@ -1,0 +1,2278 @@
+{
+  "metadata": {
+    "set_id": "benchmark_v1",
+    "name": "保险智能体评测标杆题库 v1.0",
+    "description": "覆盖五大维度的50道核心评测题目",
+    "version": "1.0.0",
+    "total_score": 5000,
+    "created_at": "2026-02-23",
+    "variant_of": "benchmark_v1",
+    "variation_config": {
+      "variations_per_question": 2,
+      "seed": 2024,
+      "total_variants": 20
+    }
+  },
+  "questions": [
+    {
+      "question_id": "INS-KNOW-001",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "等待期条款解析",
+      "description": null,
+      "content": "请阅读以下重疾险条款节选，回答问题：\n\n【条款第六条 保险责任】\n本合同生效之日起90日内（含第90日），被保险人因意外伤害以外的原因确诊初次患有本合同所定义的重大疾病，我们不承担保险责任，但将退还您所交纳的保险费，本合同终止。这90日的时间称为等待期。\n\n【问题】\n客户于2024年1月1日投保重疾险，2024年3月15日（非意外）确诊肺癌。请问保险公司应如何处理？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "calculation_days": {
+              "type": "integer"
+            },
+            "applicable_clause": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "calculation_days"
+          ]
+        },
+        "required_fields": [
+          "conclusion",
+          "reasoning",
+          "calculation_days"
+        ],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "退还保费",
+          "拒赔",
+          "解除合同"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "等待期",
+          "90日",
+          "74天"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "calculation_days",
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "退还保费",
+        "calculation_days": 74,
+        "reasoning": "确诊时间在等待期（90日）内"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "等待期",
+        "重疾险",
+        "条款解析"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198838",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-002",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "免责条款识别",
+      "description": null,
+      "content": "【意外险免责条款】\n因下列情形之一，造成被保险人身故、伤残的，本公司不承担给付保险金的责任：\n（一）投保人对被保险人的故意杀害、故意伤害；\n（二）被保险人故意犯罪或抗拒依法采取的刑事强制措施；\n（三）被保险人自杀或故意自伤，但被保险人自杀或故意自伤时为无民事行为能力人的除外；\n（四）被保险人醉酒、吸食或注射毒品；\n（五）被保险人酒后驾驶、无合法有效驾驶证驾驶，或驾驶无有效行驶证的机动车；\n（六）被保险人从事潜水、跳伞、攀岩、蹦极、探险等高风险运动。\n\n【案例】\n被保险人张某在酒后驾驶摩托车时发生交通事故，造成右腿伤残。请问保险公司是否赔付？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "applicable_exclusion": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "拒赔",
+          "不赔付",
+          "不承担"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "免责",
+          "酒后驾驶",
+          "第五条"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "赔付",
+          "理赔",
+          "给付"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "拒赔",
+        "reasoning": "酒后驾驶属于免责条款第五条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "免责条款",
+        "意外险",
+        "酒后驾驶"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198849",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-003",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "两年不可抗辩条款",
+      "description": null,
+      "content": "【案情】\n- 投保时间：2022年6月1日（重疾险）\n- 健康告知询问：\"过去2年内是否有过住院手术？\"，投保人回答：\"否\"\n- 理赔申请：2025年5月确诊胃癌申请理赔\n- 调查发现：2022年3月因\"阑尾炎\"住院手术3天\n- 合同成立已超过2年\n\n【问题】保险公司应如何处理？请给出结论和法律依据。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "legal_basis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "legal_basis"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "正常赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "不可抗辩",
+          "两年",
+          "第十六条",
+          "保险法"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "拒赔",
+          "解除"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "正常赔付",
+        "reasoning": "合同成立超过2年，适用不可抗辩条款；且阑尾炎与胃癌无医学关联",
+        "legal_basis": "保险法第十六条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "不可抗辩",
+        "如实告知",
+        "理赔"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198857",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-004",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "犹豫期退保",
+      "description": null,
+      "content": "【条款】\n您收到本合同并书面签收之日起15个自然日为犹豫期。在此期间，您可以书面通知本公司解除本合同。本公司将在扣除不超过10元的工本费后，无息退还您所交纳的保险费。\n\n【案例】\n客户李某于2024年3月1日签收保单，3月10日向保险公司申请退保。保险公司应退还多少保费？假设李某已交首年保费10,000元。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "refund_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "within_cooling_period": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "refund_amount",
+            "within_cooling_period"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "犹豫期",
+          "15日",
+          "无息退还"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "refund_amount",
+        "numeric_tolerance": 10.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "refund_amount": 10000,
+        "within_cooling_period": true,
+        "reasoning": "3月10日在犹豫期内，应全额退保"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "犹豫期",
+        "退保",
+        "消费者权益"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198864",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-005",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "宽限期与保单效力",
+      "description": null,
+      "content": "【条款】\n分期交纳保险费的，您交纳首期保险费后，如果您到期未交纳保险费，自保险费约定交纳日的次日零时起60日为宽限期。宽限期内发生的保险事故，本公司仍会承担保险责任，但在给付保险金时会扣减您欠交的保险费。\n\n【案例】\n客户王某的保单每年应交保费日为6月1日。2024年6月1日未交费，8月15日发生保险事故。保险公司是否承担保险责任？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "deduction": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "承担",
+          "赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "宽限期",
+          "60日",
+          "扣减"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不承担",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "承担保险责任",
+        "reasoning": "8月15日在宽限期内（6月2日至7月31日）",
+        "deduction": "给付时扣减欠交保费"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "宽限期",
+        "保单效力",
+        "保费交纳"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198871",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-006",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重疾险疾病定义",
+      "description": null,
+      "content": "【急性心肌梗死定义】\n指因冠状动脉阻塞导致的相应区域供血不足造成部分心肌坏死。须满足下列至少三项条件：\n(1) 典型临床表现，例如急性胸痛等；\n(2) 新近的心电图改变提示急性心肌梗死；\n(3) 心肌酶或肌钙蛋白有诊断意义的升高，或呈符合急性心肌梗死的动态性变化；\n(4) 发病90天后，经检查证实左心室功能降低，如左心室射血分数低于50%。\n\n【案例】\n患者因胸痛入院，心电图显示ST段抬高，肌钙蛋白升高至正常值5倍，但左心室射血分数为55%。是否满足重疾理赔条件？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "conditions_met": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "满足",
+          "符合"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "三项",
+          "肌钙蛋白",
+          "心电图"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不满足",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "满足重疾条件",
+        "reasoning": "满足(1)急性胸痛、(2)心电图改变、(3)肌钙蛋白升高三项条件",
+        "conditions_met": [
+          "胸痛",
+          "心电图改变",
+          "肌钙蛋白升高"
+        ]
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重疾定义",
+        "急性心梗",
+        "理赔条件"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198878",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-007",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "保单贷款权益",
+      "description": null,
+      "content": "【条款】\n本合同有效期内，您可以申请保单贷款。贷款金额不得超过本合同现金价值扣除各项欠款后余额的80%，每次贷款期限最长不超过6个月。\n\n【案例】\n客户张某的保单现金价值为50,000元，无欠款。最多可以贷款多少？如果贷款6个月后未还款，会怎样？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "max_loan_amount": {
+              "type": "number"
+            },
+            "consequences": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "max_loan_amount",
+            "consequences"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "80%",
+          "现金价值",
+          "6个月"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "max_loan_amount",
+        "numeric_tolerance": 100.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "max_loan_amount": 40000,
+        "consequences": "利息计入本金，超过现金价值时合同效力中止"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "保单贷款",
+        "现金价值",
+        "保单权益"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198885",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-008",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "easy",
+      "title": "受益人指定",
+      "description": null,
+      "content": "【保险法规定】\n人身保险的受益人由被保险人或者投保人指定。投保人指定受益人时须经被保险人同意。被保险人为无民事行为能力人或者限制民事行为能力人的，可以由其监护人指定受益人。\n\n【案例】\n10岁儿童王某的父母为其投保人身保险，未经王某同意指定其叔叔为受益人。该指定是否有效？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "valid": {
+              "type": "boolean"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valid",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "有效",
+          "监护人",
+          "被保险人同意"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "无效",
+          "不合法"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "valid": true,
+        "reasoning": "10岁为限制民事行为能力人，可由监护人（父母）指定受益人"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "受益人",
+        "监护人",
+        "保险法"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198891",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-009",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重复理赔与补偿原则",
+      "description": null,
+      "content": "【案例】\n客户李某购买了A公司的费用补偿型医疗保险（保额10万，免赔额1万，赔付比例80%）和B公司的同类产品（保额5万，免赔额0，赔付比例100%）。李某住院治疗花费8万元，社保报销3万元。\n\n【问题】两家保险公司分别应赔付多少？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "company_a_payment": {
+              "type": "number"
+            },
+            "company_b_payment": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "company_a_payment",
+            "company_b_payment"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "补偿原则",
+          "不超过",
+          "实际花费"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "company_a_payment",
+        "numeric_tolerance": 500.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "company_a_payment": 32000,
+        "company_b_payment": 18000,
+        "reasoning": "总报销不超过实际花费5万；A公司：(5万-1万)*80%=3.2万；B公司：剩余1.8万"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重复理赔",
+        "补偿原则",
+        "医疗保险"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198898",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-010",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "减额交清",
+      "description": null,
+      "content": "【条款】\n如果您决定不再交纳续期保险费，您可以书面申请将本合同变更为减额交清保险。我们将以宽限期开始前一日的现金价值扣除各项欠款后的余额作为一次性交清的净保险费，重新计算保险金额。\n\n【案例】\n客户赵某因经济困难申请减额交清。原保额50万，现金价值20,000元，欠款2,000元。减额交清后的保额会如何变化？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "reduced_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "reduced_amount",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "降低",
+          "减少",
+          "现金价值"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不变",
+          "保持"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "reduced_amount": "小于50万",
+        "reasoning": "以18,000元作为净保险费重新计算保额，保额会降低"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "减额交清",
+        "保单权益",
+        "保费交纳"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198904",
+      "updated_at": null,
+      "is_variant": false,
+      "parent_id": null,
+      "variant_seed": null
+    },
+    {
+      "question_id": "INS-KNOW-001_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "等待期条款解析",
+      "description": null,
+      "content": "请阅读以下重疾险条款节选，回答问题：\n\n【条款第六条 保险责任】\n本合同生效之日起90日内（含第90日），被保险人因意外伤害以外的原因确诊初次患有本合同所定义的重大疾病，我们不承担保险责任，但将退还您所交纳的保险费，本合同终止。这90日的时间称为等待期。\n\n【问题】\n客户于2023年5月28日投保重疾险，2024年12月27日（非意外）确诊肺癌。请问保险公司应如何处理？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "calculation_days": {
+              "type": "integer"
+            },
+            "applicable_clause": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "calculation_days"
+          ]
+        },
+        "required_fields": [
+          "conclusion",
+          "reasoning",
+          "calculation_days"
+        ],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "退还保费",
+          "拒赔",
+          "解除合同"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "等待期",
+          "90日",
+          "74天"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "calculation_days",
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "退还保费",
+        "calculation_days": 83,
+        "reasoning": "确诊时间在等待期（90日）内"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "等待期",
+        "重疾险",
+        "条款解析",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.198974",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-001",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-001_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "等待期条款解析",
+      "description": null,
+      "content": "请阅读以下重疾险条款节选，回答问题：\n\n【条款第六条 保险责任】\n本合同生效之日起90日内（含第90日），被保险人因意外伤害以外的原因确诊初次患有本合同所定义的重大疾病，我们不承担保险责任，但将退还您所交纳的保险费，本合同终止。这90日的时间称为等待期。\n\n【问题】\n客户于2023年12月22日投保重疾险，2023年4月20日（非意外）确诊肺癌。请问保险公司应如何处理？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "calculation_days": {
+              "type": "integer"
+            },
+            "applicable_clause": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "calculation_days"
+          ]
+        },
+        "required_fields": [
+          "conclusion",
+          "reasoning",
+          "calculation_days"
+        ],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "退还保费",
+          "拒赔",
+          "解除合同"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "等待期",
+          "90日",
+          "74天"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "calculation_days",
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "退还保费",
+        "calculation_days": 74,
+        "reasoning": "确诊时间在等待期（90日）内"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "等待期",
+        "重疾险",
+        "条款解析",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199108",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-001",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-002_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "免责条款识别",
+      "description": null,
+      "content": "【意外险免责条款】\n因下列情形之一，造成被保险人身故、伤残的，本公司不承担给付保险金的责任：\n（一）投保人对被保险人的故意杀害、故意伤害；\n（二）被保险人故意犯罪或抗拒依法采取的刑事强制措施；\n（三）被保险人自杀或故意自伤，但被保险人自杀或故意自伤时为无民事行为能力人的除外；\n（四）被保险人醉酒、吸食或注射毒品；\n（五）被保险人酒后驾驶、无合法有效驾驶证驾驶，或驾驶无有效行驶证的机动车；\n（六）被保险人从事潜水、跳伞、攀岩、蹦极、探险等高风险运动。\n\n【案例】\n被保险人马某在酒后驾驶摩托车时发生交通事故，造成右腿伤残。请问保险公司是否赔付？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "applicable_exclusion": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "拒赔",
+          "不赔付",
+          "不承担"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "免责",
+          "酒后驾驶",
+          "第五条"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "赔付",
+          "理赔",
+          "给付"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "拒赔",
+        "reasoning": "酒后驾驶属于免责条款第五条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "免责条款",
+        "意外险",
+        "酒后驾驶",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199232",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-002",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-002_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "免责条款识别",
+      "description": null,
+      "content": "【意外险免责条款】\n因下列情形之一，造成被保险人身故、伤残的，本公司不承担给付保险金的责任：\n（一）投保人对被保险人的故意杀害、故意伤害；\n（二）被保险人故意犯罪或抗拒依法采取的刑事强制措施；\n（三）被保险人自杀或故意自伤，但被保险人自杀或故意自伤时为无民事行为能力人的除外；\n（四）被保险人醉酒、吸食或注射毒品；\n（五）被保险人酒后驾驶、无合法有效驾驶证驾驶，或驾驶无有效行驶证的机动车；\n（六）被保险人从事潜水、跳伞、攀岩、蹦极、探险等高风险运动。\n\n【案例】\n被保险人马某在酒后驾驶摩托车时发生交通事故，造成右腿伤残。请问保险公司是否赔付？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "applicable_exclusion": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "拒赔",
+          "不赔付",
+          "不承担"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "免责",
+          "酒后驾驶",
+          "第五条"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "赔付",
+          "理赔",
+          "给付"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "拒赔",
+        "reasoning": "酒后驾驶属于免责条款第五条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "免责条款",
+        "意外险",
+        "酒后驾驶",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199349",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-002",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-003_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "两年不可抗辩条款",
+      "description": null,
+      "content": "【案情】\n- 投保时间：2021年10月26日（重疾险）\n- 健康告知询问：\"过去2年内是否有过住院手术？\"，投保人回答：\"否\"\n- 理赔申请：2025年5月确诊胃癌申请理赔\n- 调查发现：2022年3月因\"阑尾炎\"住院手术3天\n- 合同成立已超过2年\n\n【问题】保险公司应如何处理？请给出结论和法律依据。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "legal_basis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "legal_basis"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "正常赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "不可抗辩",
+          "两年",
+          "第十六条",
+          "保险法"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "拒赔",
+          "解除"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "正常赔付",
+        "reasoning": "合同成立超过2年，适用不可抗辩条款；且阑尾炎与胃癌无医学关联",
+        "legal_basis": "保险法第十六条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "不可抗辩",
+        "如实告知",
+        "理赔",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199465",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-003",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-003_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "两年不可抗辩条款",
+      "description": null,
+      "content": "【案情】\n- 投保时间：2022年5月22日（重疾险）\n- 健康告知询问：\"过去2年内是否有过住院手术？\"，投保人回答：\"否\"\n- 理赔申请：2025年5月确诊胃癌申请理赔\n- 调查发现：2022年3月因\"阑尾炎\"住院手术3天\n- 合同成立已超过2年\n\n【问题】保险公司应如何处理？请给出结论和法律依据。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "legal_basis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning",
+            "legal_basis"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "正常赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "不可抗辩",
+          "两年",
+          "第十六条",
+          "保险法"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "拒赔",
+          "解除"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "正常赔付",
+        "reasoning": "合同成立超过2年，适用不可抗辩条款；且阑尾炎与胃癌无医学关联",
+        "legal_basis": "保险法第十六条"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "不可抗辩",
+        "如实告知",
+        "理赔",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199576",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-003",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-004_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "犹豫期退保",
+      "description": null,
+      "content": "【条款】\n您收到本合同并书面签收之日起15个自然日为犹豫期。在此期间，您可以书面通知本公司解除本合同。本公司将在扣除不超过9元的工本费后，无息退还您所交纳的保险费。\n\n【案例】\n客户林某于2023年7月27日签收保单，3月10日向保险公司申请退保。保险公司应退还多少保费？假设林某已交首年保费10550元。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "refund_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "within_cooling_period": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "refund_amount",
+            "within_cooling_period"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "犹豫期",
+          "15日",
+          "无息退还"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "refund_amount",
+        "numeric_tolerance": 10.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "refund_amount": 10550,
+        "within_cooling_period": true,
+        "reasoning": "3月10日在犹豫期内，应全额退保"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "犹豫期",
+        "退保",
+        "消费者权益",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199687",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-004",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-004_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "犹豫期退保",
+      "description": null,
+      "content": "【条款】\n您收到本合同并书面签收之日起15个自然日为犹豫期。在此期间，您可以书面通知本公司解除本合同。本公司将在扣除不超过10元的工本费后，无息退还您所交纳的保险费。\n\n【案例】\n客户林某于2024年2月20日签收保单，3月10日向保险公司申请退保。保险公司应退还多少保费？假设林某已交首年保费10873元。",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "refund_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "within_cooling_period": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "refund_amount",
+            "within_cooling_period"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "犹豫期",
+          "15日",
+          "无息退还"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "refund_amount",
+        "numeric_tolerance": 10.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "refund_amount": 10873,
+        "within_cooling_period": true,
+        "reasoning": "3月10日在犹豫期内，应全额退保"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "犹豫期",
+        "退保",
+        "消费者权益",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199803",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-004",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-005_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "宽限期与保单效力",
+      "description": null,
+      "content": "【条款】\n分期交纳保险费的，您交纳首期保险费后，如果您到期未交纳保险费，自保险费约定交纳日的次日零时起60日为宽限期。宽限期内发生的保险事故，本公司仍会承担保险责任，但在给付保险金时会扣减您欠交的保险费。\n\n【案例】\n客户周某的保单每年应交保费日为6月1日。2023年10月27日未交费，8月15日发生保险事故。保险公司是否承担保险责任？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "deduction": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "承担",
+          "赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "宽限期",
+          "60日",
+          "扣减"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不承担",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "承担保险责任",
+        "reasoning": "8月15日在宽限期内（6月2日至7月31日）",
+        "deduction": "给付时扣减欠交保费"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "宽限期",
+        "保单效力",
+        "保费交纳",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.199917",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-005",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-005_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "宽限期与保单效力",
+      "description": null,
+      "content": "【条款】\n分期交纳保险费的，您交纳首期保险费后，如果您到期未交纳保险费，自保险费约定交纳日的次日零时起60日为宽限期。宽限期内发生的保险事故，本公司仍会承担保险责任，但在给付保险金时会扣减您欠交的保险费。\n\n【案例】\n客户周某的保单每年应交保费日为6月1日。2024年5月22日未交费，8月15日发生保险事故。保险公司是否承担保险责任？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "deduction": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "承担",
+          "赔付",
+          "理赔"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "宽限期",
+          "60日",
+          "扣减"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不承担",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "承担保险责任",
+        "reasoning": "8月15日在宽限期内（6月2日至7月31日）",
+        "deduction": "给付时扣减欠交保费"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "宽限期",
+        "保单效力",
+        "保费交纳",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200029",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-005",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-006_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重疾险疾病定义",
+      "description": null,
+      "content": "【急性心肌梗死定义】\n指因冠状动脉阻塞导致的相应区域供血不足造成部分心肌坏死。须满足下列至少三项条件：\n(1) 典型临床表现，例如急性胸痛等；\n(2) 新近的心电图改变提示急性心肌梗死；\n(3) 心肌酶或肌钙蛋白有诊断意义的升高，或呈符合急性心肌梗死的动态性变化；\n(4) 发病90天后，经检查证实左心室功能降低，如左心室射血分数低于50%。\n\n【案例】\n患者因胸痛入院，心电图显示ST段抬高，肌钙蛋白升高至正常值5倍，但左心室射血分数为55%。是否满足重疾理赔条件？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "conditions_met": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "满足",
+          "符合"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "三项",
+          "肌钙蛋白",
+          "心电图"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不满足",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "满足重疾条件",
+        "reasoning": "满足(1)急性胸痛、(2)心电图改变、(3)肌钙蛋白升高三项条件",
+        "conditions_met": [
+          "胸痛",
+          "心电图改变",
+          "肌钙蛋白升高"
+        ]
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重疾定义",
+        "急性心梗",
+        "理赔条件",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200156",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-006",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-006_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重疾险疾病定义",
+      "description": null,
+      "content": "【急性心肌梗死定义】\n指因冠状动脉阻塞导致的相应区域供血不足造成部分心肌坏死。须满足下列至少三项条件：\n(1) 典型临床表现，例如急性胸痛等；\n(2) 新近的心电图改变提示急性心肌梗死；\n(3) 心肌酶或肌钙蛋白有诊断意义的升高，或呈符合急性心肌梗死的动态性变化；\n(4) 发病90天后，经检查证实左心室功能降低，如左心室射血分数低于50%。\n\n【案例】\n患者因胸痛入院，心电图显示ST段抬高，肌钙蛋白升高至正常值5倍，但左心室射血分数为55%。是否满足重疾理赔条件？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "conclusion": {
+              "type": "string"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "conditions_met": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "conclusion",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": [
+          "赔付",
+          "满足",
+          "符合"
+        ],
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "三项",
+          "肌钙蛋白",
+          "心电图"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不满足",
+          "拒赔"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "conclusion": "满足重疾条件",
+        "reasoning": "满足(1)急性胸痛、(2)心电图改变、(3)肌钙蛋白升高三项条件",
+        "conditions_met": [
+          "胸痛",
+          "心电图改变",
+          "肌钙蛋白升高"
+        ]
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重疾定义",
+        "急性心梗",
+        "理赔条件",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200282",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-006",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-007_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "保单贷款权益",
+      "description": null,
+      "content": "【条款】\n本合同有效期内，您可以申请保单贷款。贷款金额不得超过本合同现金价值扣除各项欠款后余额的80%，每次贷款期限最长不超过6个月。\n\n【案例】\n客户马某的保单现金价值为42874元，无欠款。最多可以贷款多少？如果贷款6个月后未还款，会怎样？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "max_loan_amount": {
+              "type": "number"
+            },
+            "consequences": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "max_loan_amount",
+            "consequences"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "80%",
+          "现金价值",
+          "6个月"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "max_loan_amount",
+        "numeric_tolerance": 100.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "max_loan_amount": 43525,
+        "consequences": "利息计入本金，超过现金价值时合同效力中止"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "保单贷款",
+        "现金价值",
+        "保单权益",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200403",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-007",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-007_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "保单贷款权益",
+      "description": null,
+      "content": "【条款】\n本合同有效期内，您可以申请保单贷款。贷款金额不得超过本合同现金价值扣除各项欠款后余额的80%，每次贷款期限最长不超过6个月。\n\n【案例】\n客户马某的保单现金价值为46934元，无欠款。最多可以贷款多少？如果贷款6个月后未还款，会怎样？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "max_loan_amount": {
+              "type": "number"
+            },
+            "consequences": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "max_loan_amount",
+            "consequences"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "80%",
+          "现金价值",
+          "6个月"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "max_loan_amount",
+        "numeric_tolerance": 100.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "max_loan_amount": 43398,
+        "consequences": "利息计入本金，超过现金价值时合同效力中止"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "保单贷款",
+        "现金价值",
+        "保单权益",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200509",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-007",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-008_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "easy",
+      "title": "受益人指定",
+      "description": null,
+      "content": "【保险法规定】\n人身保险的受益人由被保险人或者投保人指定。投保人指定受益人时须经被保险人同意。被保险人为无民事行为能力人或者限制民事行为能力人的，可由其监护人指定受益人。\n\n【案例】\n7岁儿童周某的父母为其投保人身保险，未经周某同意指定其叔叔为受益人。该指定是否有效？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "valid": {
+              "type": "boolean"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valid",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "有效",
+          "监护人",
+          "被保险人同意"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "无效",
+          "不合法"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "valid": true,
+        "reasoning": "10岁为限制民事行为能力人，可由监护人（父母）指定受益人"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "受益人",
+        "监护人",
+        "保险法",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200614",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-008",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-008_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "easy",
+      "title": "受益人指定",
+      "description": null,
+      "content": "【保险法规定】\n人身保险的受益人由被保险人或者投保人指定。投保人指定受益人时须经被保险人同意。被保险人为无民事行为能力人或者限制民事行为能力人的，可以由其监护人指定受益人。\n\n【案例】\n10岁儿童周某的父母为其投保人身保险，未经周某同意指定其叔叔为受益人。该指定是否有效？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "valid": {
+              "type": "boolean"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valid",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "有效",
+          "监护人",
+          "被保险人同意"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "无效",
+          "不合法"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "valid": true,
+        "reasoning": "10岁为限制民事行为能力人，可由监护人（父母）指定受益人"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "受益人",
+        "监护人",
+        "保险法",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200722",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-008",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-009_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重复理赔与补偿原则",
+      "description": null,
+      "content": "【案例】\n客户林某购买了A公司的费用补偿型医疗保险（保额8.6万元，免赔额0.7.1万元，赔付比例80%）和B公司的同类产品（保额5.0万元，免赔额0，赔付比例100%）。林某住院治疗花费8万元，社保报销3.0万元。\n\n【问题】两家保险公司分别应赔付多少？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "company_a_payment": {
+              "type": "number"
+            },
+            "company_b_payment": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "company_a_payment",
+            "company_b_payment"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "补偿原则",
+          "不超过",
+          "实际花费"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "company_a_payment",
+        "numeric_tolerance": 500.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "company_a_payment": 35876,
+        "company_b_payment": 15053,
+        "reasoning": "总报销不超过实际花费5万；A公司：(5万-1万)*80%=3.2万；B公司：剩余1.8万"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重复理赔",
+        "补偿原则",
+        "医疗保险",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.200870",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-009",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-009_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "重复理赔与补偿原则",
+      "description": null,
+      "content": "【案例】\n客户林某购买了A公司的费用补偿型医疗保险（保额9.4万元，免赔额0.8.5万元，赔付比例80%）和B公司的同类产品（保额4.6万元，免赔额0，赔付比例100%）。林某住院治疗花费8万元，社保报销3.6万元。\n\n【问题】两家保险公司分别应赔付多少？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "company_a_payment": {
+              "type": "number"
+            },
+            "company_b_payment": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "company_a_payment",
+            "company_b_payment"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "补偿原则",
+          "不超过",
+          "实际花费"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": null,
+        "numeric_path": "company_a_payment",
+        "numeric_tolerance": 500.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "company_a_payment": 27473,
+        "company_b_payment": 19480,
+        "reasoning": "总报销不超过实际花费5万；A公司：(5万-1万)*80%=3.2万；B公司：剩余1.8万"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "重复理赔",
+        "补偿原则",
+        "医疗保险",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.201099",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-009",
+      "variant_seed": 4024
+    },
+    {
+      "question_id": "INS-KNOW-010_var1",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "减额交清",
+      "description": null,
+      "content": "【条款】\n如果您决定不再交纳续期保险费，您可书面申请将本合同变更为减额交清保险。我们将以宽限期开始前一日的现金价值扣除各项欠款后的余额作为一次性交清的净保险费，重新计算保险金额。\n\n【案例】\n客户胡某因经济困难申请减额交清。原保额49.7万元，现金价值17150元，欠款1687元。减额交清后的保额会如何变化？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "reduced_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "reduced_amount",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "降低",
+          "减少",
+          "现金价值"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不变",
+          "保持"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "reduced_amount": "小于50万",
+        "reasoning": "以18,000元作为净保险费重新计算保额，保额会降低"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "减额交清",
+        "保单权益",
+        "保费交纳",
+        "variant",
+        "seed_3024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.201211",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-010",
+      "variant_seed": 3024
+    },
+    {
+      "question_id": "INS-KNOW-010_var2",
+      "dimension": "knowledge",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "减额交清",
+      "description": null,
+      "content": "【条款】\n如果您决定不再交纳续期保险费，您可以书面申请将本合同变更为减额交清保险。我们将以宽限期开始前一日的现金价值扣除各项欠款后的余额作为一次性交清的净保险费，重新计算保险金额。\n\n【案例】\n客户胡某因经济困难申请减额交清。原保额59.6万元，现金价值18774元，欠款1628元。减额交清后的保额会如何变化？",
+      "context": null,
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "reduced_amount": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "reduced_amount",
+            "reasoning"
+          ]
+        },
+        "required_fields": [],
+        "output_instructions": null
+      },
+      "validation_rules": {
+        "conclusion_must_be_one_of": null,
+        "conclusion_exact_match": null,
+        "must_contain_keywords": [
+          "降低",
+          "减少",
+          "现金价值"
+        ],
+        "must_contain_any": null,
+        "prohibited_keywords": [
+          "不变",
+          "保持"
+        ],
+        "numeric_path": null,
+        "numeric_tolerance": 1.0,
+        "numeric_tolerance_type": "absolute",
+        "required_tools": null,
+        "tool_sequence_strict": false,
+        "required_states": null,
+        "custom_logic": null
+      },
+      "ground_truth": {
+        "reduced_amount": "小于50万",
+        "reasoning": "以18,000元作为净保险费重新计算保额，保额会降低"
+      },
+      "score": 100.0,
+      "partial_score_rules": null,
+      "tags": [
+        "减额交清",
+        "保单权益",
+        "保费交纳",
+        "variant",
+        "seed_4024"
+      ],
+      "source": null,
+      "version": "1.0",
+      "created_at": "2026-02-24T12:15:36.201330",
+      "updated_at": null,
+      "is_variant": true,
+      "parent_id": "INS-KNOW-010",
+      "variant_seed": 4024
+    }
+  ]
+}

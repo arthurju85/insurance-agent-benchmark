@@ -1,0 +1,326 @@
+{
+  "metadata": {
+    "set_id": "understanding_v1",
+    "name": "客户需求理解维度题库",
+    "description": "测试Agent对客户意图识别、情感分析和多轮对话的处理能力",
+    "version": "1.0.0",
+    "total_score": 1000,
+    "created_at": "2026-02-23"
+  },
+  "questions": [
+    {
+      "question_id": "INS-UND-001",
+      "dimension": "understanding",
+      "question_type": "multi_turn",
+      "difficulty": "medium",
+      "title": "意图转移识别",
+      "content": "【多轮对话场景】\n\n用户第1轮：\"我想了解一下保险\"\n用户第2轮：\"就是我经常出差，怕飞机出事\"\n用户第3轮：\"但是你们公司我没听说过，靠谱吗？\"\n\n请分析：\n1. 用户第2轮表达的核心需求是什么？\n2. 用户第3轮表达的情绪/顾虑是什么？\n3. 作为Agent，第3轮应该如何回应？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "intent_round2": {"type": "string"},
+            "emotion_round3": {"type": "string"},
+            "response_strategy": {"type": "string"}
+          },
+          "required": ["intent_round2", "emotion_round3", "response_strategy"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["交通意外", "出行", "信任", "资质", "偿付能力"],
+        "must_contain_any": ["飞机", "航空", "差旅"]
+      },
+      "ground_truth": {
+        "intent_round2": "交通意外险/出行保障需求",
+        "emotion_round3": "信任顾虑/公司资质担忧",
+        "response_strategy": "介绍公司背景和偿付能力"
+      },
+      "score": 100,
+      "tags": ["意图识别", "情感分析", "多轮对话"]
+    },
+    {
+      "question_id": "INS-UND-002",
+      "dimension": "understanding",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "价格敏感客户",
+      "content": "【用户输入】\n\"你们这个保费太贵了！我朋友买的XX保险才2000多，你们要我8000，是不是在坑我？\"\n\n【问题】\n1. 客户的情绪状态是什么？\n2. 客户的核心诉求是什么？\n3. Agent应如何应对？请给出回应要点。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "emotion": {"type": "string"},
+            "core_need": {"type": "string"},
+            "response_points": {"type": "array"}
+          },
+          "required": ["emotion", "core_need", "response_points"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["价格敏感", "性价比", "保障范围", "保额差异"],
+        "must_contain_any": ["质疑", "怀疑", "不信任"]
+      },
+      "ground_truth": {
+        "emotion": "价格敏感+质疑",
+        "core_need": "了解价格差异原因，获得性价比认可",
+        "response_points": ["解释价格差异原因", "对比保障范围", "提供详细计划书"]
+      },
+      "score": 100,
+      "tags": ["价格敏感", "异议处理", "情感识别"]
+    },
+    {
+      "question_id": "INS-UND-003",
+      "dimension": "understanding",
+      "question_type": "multi_turn",
+      "difficulty": "hard",
+      "title": "隐藏需求挖掘",
+      "content": "【对话历史】\n\n用户：\"我想给爸妈买保险\"\nAgent：\"好的，您父母今年多大年纪？身体状况怎么样？\"\n用户：\"我爸65，我妈62，都还算健康，就是我妈血压有点高\"\nAgent：\"了解，那您主要想给父母哪方面的保障呢？\"\n用户：\"就担心他们生病吧，现在医院太贵了\"\n\n【问题】\n1. 用户最初表达的显性需求是什么？\n2. 通过对话挖掘出的隐性需求有哪些？\n3. 针对\"血压有点高\"，Agent应该追问什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "explicit_need": {"type": "string"},
+            "implicit_needs": {"type": "array"},
+            "follow_up_questions": {"type": "array"}
+          },
+          "required": ["explicit_need", "implicit_needs", "follow_up_questions"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["医疗险", "重疾险", "高血压", "健康告知"],
+        "must_contain_any": ["住院", "医疗费用", "大病"]
+      },
+      "ground_truth": {
+        "explicit_need": "为父母购买保险",
+        "implicit_needs": ["医疗保障", "费用报销", "高龄投保可行性"],
+        "follow_up_questions": ["高血压病史多久", "是否服药控制", "有无并发症"]
+      },
+      "score": 100,
+      "tags": ["需求挖掘", "健康告知", "高龄投保"]
+    },
+    {
+      "question_id": "INS-UND-004",
+      "dimension": "understanding",
+      "question_type": "case_analysis",
+      "difficulty": "easy",
+      "title": "直接需求表达",
+      "content": "【用户输入】\n\"我30岁，刚结婚，准备要孩子，想买一份能保大病的保险，预算每年5000左右。\"\n\n【问题】\n请提取以下信息：\n1. 客户画像（年龄、家庭阶段）\n2. 核心需求\n3. 预算约束\n4. 适合的保险类型推荐",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "customer_profile": {"type": "object"},
+            "core_need": {"type": "string"},
+            "budget": {"type": "string"},
+            "recommendations": {"type": "array"}
+          },
+          "required": ["customer_profile", "core_need", "budget", "recommendations"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["30岁", "新婚", "备孕", "重疾险", "5000"],
+        "must_contain_any": ["医疗险", "重疾险", "定期寿险"]
+      },
+      "ground_truth": {
+        "customer_profile": {"age": 30, "family_stage": "新婚备孕"},
+        "core_need": "大病保障",
+        "budget": "年保费5000元",
+        "recommendations": ["重疾险", "医疗险"]
+      },
+      "score": 100,
+      "tags": ["需求提取", "客户画像", "产品匹配"]
+    },
+    {
+      "question_id": "INS-UND-005",
+      "dimension": "understanding",
+      "question_type": "multi_turn",
+      "difficulty": "hard",
+      "title": "情绪升级处理",
+      "content": "【对话历史】\n\n用户：\"我之前买的保险理赔被拒了，你们保险都是骗人的！\"\nAgent：\"非常理解您的心情，能否告诉我具体是什么情况？\"\n用户：\"我骨折了，保险公司说我这是旧伤，不给赔！\"\nAgent：\"明白了，这种情况确实让人着急。您投保时是否记得健康告知的内容？\"\n用户：\"什么健康告知？我买的时候你们销售可没跟我说这些！现在出事了就找理由！\"\n\n【问题】\n1. 用户当前的情绪状态是什么？\n2. 用户的核心诉求是什么？\n3. Agent此时应如何回应才能安抚情绪？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "emotion": {"type": "string"},
+            "core_appeal": {"type": "string"},
+            "response_strategy": {"type": "string"}
+          },
+          "required": ["emotion", "core_appeal", "response_strategy"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["愤怒", "委屈", "投诉", "理解", "解决方案"],
+        "must_contain_any": ["未告知", "销售误导", "维权"]
+      },
+      "ground_truth": {
+        "emotion": "愤怒+委屈+不信任",
+        "core_appeal": "获得理赔或合理解释",
+        "response_strategy": "先共情安抚，再了解详情，提供解决路径"
+      },
+      "score": 100,
+      "tags": ["情绪管理", "投诉处理", "理赔纠纷"]
+    },
+    {
+      "question_id": "INS-UND-006",
+      "dimension": "understanding",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "比较型客户",
+      "content": "【用户输入】\n\"我对比了三家公司，A公司保额高但是贵，B公司便宜但是品牌小，你们居中。能给我个理由为什么选你们吗？\"\n\n【问题】\n1. 用户的决策风格是什么？\n2. 用户目前处于购买决策的哪个阶段？\n3. Agent应如何回应？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "decision_style": {"type": "string"},
+            "decision_stage": {"type": "string"},
+            "response_approach": {"type": "string"}
+          },
+          "required": ["decision_style", "decision_stage", "response_approach"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["理性", "比较", "评估", "性价比", "优势"],
+        "must_contain_any": ["决策阶段", "选择", "权衡"]
+      },
+      "ground_truth": {
+        "decision_style": "理性比较型",
+        "decision_stage": "评估比较期",
+        "response_approach": "突出差异化优势，提供对比数据"
+      },
+      "score": 100,
+      "tags": ["决策分析", "竞品对比", "销售技巧"]
+    },
+    {
+      "question_id": "INS-UND-007",
+      "dimension": "understanding",
+      "question_type": "multi_turn",
+      "difficulty": "medium",
+      "title": "模糊需求澄清",
+      "content": "【对话历史】\n\n用户：\"我想买个好点的保险\"\nAgent：\"好的，请问您主要想保障哪方面呢？\"\n用户：\"就那种比较好的\"\nAgent：\"了解，那您目前最担心什么风险？\"\n用户：\"我也说不好，你就给我推荐个好的吧\"\n\n【问题】\n1. 用户为什么无法明确表达需求？\n2. Agent接下来应该如何引导？\n3. 请设计3个封闭式问题帮助用户明确需求。",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "reason": {"type": "string"},
+            "guidance_strategy": {"type": "string"},
+            "closing_questions": {"type": "array"}
+          },
+          "required": ["reason", "guidance_strategy", "closing_questions"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["不了解", "引导", "场景化", "选择题"],
+        "must_contain_any": ["医疗", "重疾", "意外", "养老"]
+      },
+      "ground_truth": {
+        "reason": "对保险产品不了解，无法将需求映射到具体产品",
+        "guidance_strategy": "用场景化封闭式问题引导",
+        "closing_questions": ["是否担心大病医疗费用？", "是否需要养老储备？", "是否经常出差？"]
+      },
+      "score": 100,
+      "tags": ["需求澄清", "引导技巧", "场景化"]
+    },
+    {
+      "question_id": "INS-UND-008",
+      "dimension": "understanding",
+      "question_type": "case_analysis",
+      "difficulty": "hard",
+      "title": "多重身份识别",
+      "content": "【用户输入】\n\"我是做企业主的，年入大概200万左右，家里有两个孩子要留学。现在想考虑一下资产传承的问题，也想给自己配点保障。你看我这种情况适合什么产品？\"\n\n【问题】\n1. 用户的身份标签有哪些？\n2. 用户的显性需求和隐性需求分别是什么？\n3. 适合的产品组合应该包含哪些？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "identity_tags": {"type": "array"},
+            "explicit_needs": {"type": "array"},
+            "implicit_needs": {"type": "array"},
+            "product_mix": {"type": "array"}
+          },
+          "required": ["identity_tags", "explicit_needs", "implicit_needs", "product_mix"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["高净值", "企业主", "资产传承", "终身寿险", "教育金"],
+        "must_contain_any": ["税务", "隔离", "信托"]
+      },
+      "ground_truth": {
+        "identity_tags": ["高净值", "企业主", "二娃家庭"],
+        "explicit_needs": ["资产传承", "个人保障"],
+        "implicit_needs": ["债务隔离", "税务规划", "子女教育储备"],
+        "product_mix": ["高额终身寿险", "年金险", "高端医疗险"]
+      },
+      "score": 100,
+      "tags": ["高净值客户", "多重需求", "复杂方案"]
+    },
+    {
+      "question_id": "INS-UND-009",
+      "dimension": "understanding",
+      "question_type": "case_analysis",
+      "difficulty": "medium",
+      "title": "沉默客户激活",
+      "content": "【场景】\n用户在网站浏览了30分钟，查看了重疾险、医疗险、意外险三个页面，但未提交任何咨询。\n\n【问题】\n1. 用户可能的画像是什么？\n2. 用户为什么迟迟没有行动？\n3. 如果你是Agent，如何主动接触并激活这个用户？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "user_profile": {"type": "string"},
+            "hesitation_reasons": {"type": "array"},
+            "activation_strategy": {"type": "string"}
+          },
+          "required": ["user_profile", "hesitation_reasons", "activation_strategy"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["犹豫", "比较", "价格敏感", "主动触达", "限时"],
+        "must_contain_any": ["信息", "对比", "疑虑"]
+      },
+      "ground_truth": {
+        "user_profile": "有保险意识但处于调研阶段",
+        "hesitation_reasons": ["信息过载", "价格犹豫", "产品选择困难"],
+        "activation_strategy": "主动推送对比分析，提供限时优惠，降低决策门槛"
+      },
+      "score": 100,
+      "tags": ["用户激活", "行为分析", "主动营销"]
+    },
+    {
+      "question_id": "INS-UND-010",
+      "dimension": "understanding",
+      "question_type": "multi_turn",
+      "difficulty": "hard",
+      "title": "异议连环处理",
+      "content": "【对话历史】\n\n用户：\"这个保费太高了\"\nAgent：\"理解您的顾虑，我们的产品在保障范围上有明显优势...\"\n用户：\"别说这些虚的，你就说能不能便宜点\"\nAgent：\"我们可以调整保额和缴费期来优化方案...\"\n用户：\"那保障又不够了，你这不就是套路吗\"\n用户：\"算了，我再考虑考虑\"\n\n【问题】\n1. 这个对话中Agent犯了哪些错误？\n2. 用户真正的顾虑是什么？\n3. 正确的应对策略应该是什么？",
+      "expected_schema": {
+        "schema_type": "json",
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "agent_mistakes": {"type": "array"},
+            "real_concern": {"type": "string"},
+            "correct_strategy": {"type": "string"}
+          },
+          "required": ["agent_mistakes", "real_concern", "correct_strategy"]
+        }
+      },
+      "validation_rules": {
+        "must_contain_keywords": ["急于推销", "没有倾听", "信任缺失", "价值", "案例"],
+        "must_contain_any": ["反驳", "辩解", "理解"]
+      },
+      "ground_truth": {
+        "agent_mistakes": ["急于解释", "没有先确认真实顾虑", "陷入价格纠缠"],
+        "real_concern": "对产品价值不认可，缺乏信任",
+        "correct_strategy": "先共情确认顾虑，用案例证明价值，再谈方案"
+      },
+      "score": 100,
+      "tags": ["异议处理", "对话分析", "销售技巧"]
+    }
+  ]
+}

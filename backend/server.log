@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/src/api/routes/../../api/routes/agent.py", line 10, in <module>
+    from ...models.agent import AgentConfig, AgentStatus, AgentType
+ImportError: attempted relative import beyond top-level package
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/start_server.py", line 14, in <module>
+    import api.routes.agent
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/src/api/routes/../../api/routes/agent.py", line 18, in <module>
+    from sandbox.factory import test_agent_connection
+  File "/Users/arthur/Apps/Projects/insurance-agent-benchmark/backend/src/api/routes/../../api/routes/../../sandbox/factory.py", line 8, in <module>
+    from ..models.agent import AgentConfig, AgentType
+ImportError: attempted relative import beyond top-level package
