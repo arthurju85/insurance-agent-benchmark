@@ -63,11 +63,13 @@ export function LiveChart({ metric }: LiveChartProps) {
   const getDataKey = (name: string) => {
     if (metric === "volume") return `${name}_volume`
     if (metric === "compliance") return `${name}_compliance`
+    if (metric === "conversion") return `${name}_conversion`
     return name
   }
 
   const formatY = (val: number) => {
     if (metric === "compliance") return `${val}%`
+    if (metric === "conversion") return `${val.toFixed(1)}%`
     if (metric === "volume") return val.toString()
     if (val >= 10000) return `${(val / 10000).toFixed(0)}${t("unit.wan")}`
     return val.toLocaleString()
@@ -75,6 +77,7 @@ export function LiveChart({ metric }: LiveChartProps) {
 
   const formatTooltip = (value: number) => {
     if (metric === "compliance") return [`${value}%`, undefined]
+    if (metric === "conversion") return [`${value.toFixed(1)}%`, undefined]
     if (metric === "volume") return [`${value} 保单`, undefined]
     return [`¥${value.toLocaleString()}`, undefined]
   }

@@ -65,8 +65,20 @@ export default function LeaderboardPage() {
     region === "all"
       ? filteredAgents
       : filteredAgents.filter((a) => {
-          if (region === "cn") return a.vendor?.includes("China") || a.vendor?.includes("Ping") || a.vendor?.includes("CPIC") || a.vendor?.includes("ZhongAn") || a.vendor?.includes("PICC") || a.vendor?.includes("Taikang")
-          if (region === "hk") return a.vendor?.includes("Hong Kong") || a.vendor?.includes("HK")
+          const vendor = a.vendor || ""
+          if (region === "cn") {
+            // 中国大陆：平安、太保、众安、人保、泰康等
+            return vendor.includes("Ping") || vendor.includes("CPIC") ||
+                   vendor.includes("ZhongAn") || vendor.includes("PICC") ||
+                   vendor.includes("Taikang") || vendor.includes("Hua") ||
+                   vendor.includes("China")
+          }
+          if (region === "hk") {
+            // 中国香港
+            return vendor.includes("Hong Kong") || vendor.includes("HK") ||
+                   vendor.includes("AIA") || vendor.includes("Prudential") ||
+                   vendor.includes("友邦") || vendor.includes("保诚")
+          }
           return true
         })
 
@@ -182,7 +194,7 @@ export default function LeaderboardPage() {
               </div>
             ) : (
               <RankingTable
-                agents={filteredAgents}
+                agents={regionFilteredAgents}
                 sortKey={activeTab}
                 compareMode={compareMode}
               />

@@ -15,8 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { Shield, CheckCircle2, AlertCircle, Loader2, FileText } from "lucide-react"
+import { Shield, CheckCircle2, AlertCircle, Loader2, FileText, ArrowRight } from "lucide-react"
 
 type AgentType = "insurer" | "tech" | "opensource"
 type ModelPlatform = "openai" | "azure_openai" | "claude" | "gemini" | "deepseek" | "qwen" | "vllm" | "other"
@@ -50,6 +57,7 @@ export default function SubmitPage() {
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {}
@@ -107,21 +115,19 @@ export default function SubmitPage() {
       const data = await response.json()
 
       if (response.ok) {
+        // 显示成功对话框
+        setShowSuccessDialog(true)
         toast.success(t("submit.success"))
-        // 显示成功提示并跳转到首页
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 1500)
+        // 清空表单
+        setFormData(initialFormData)
       } else {
         toast.error(data.detail || t("submit.form.submit"))
       }
     } catch (error) {
-      // 演示模式下，即使后端不可用也显示成功
+      // 演示模式下，显示成功对话框
       console.log("Demo mode - submission simulated")
-      toast.success(t("submit.success"))
-      setTimeout(() => {
-        window.location.href = "/"
-      }, 1500)
+      setShowSuccessDialog(true)
+      setFormData(initialFormData)
     } finally {
       setIsSubmitting(false)
     }
@@ -352,6 +358,44 @@ export default function SubmitPage() {
           </CardContent>
         </Card>
       </main>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+                <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-xl">
+              {t("submit.success")}
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              {t("submit.review")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 pt-4">
+            <Button
+              onClick={() => {
+                setShowSuccessDialog(false)
+                window.location.href = "/"
+              }}
+              className="w-full"
+            >
+              返回首页
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowSuccessDialog(false)}
+              className="w-full"
+            >
+              继续浏览
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -162,11 +162,7 @@ export default function ArenaPage() {
             {t("arena.rules")}
           </a>
           <span className="text-border">|</span>
-          <a href="/docs#evaluation-methodology" className="hover:text-foreground transition-colors underline underline-offset-4">
-            {t("arena.scenarios")}
-          </a>
-          <span className="text-border">|</span>
-          <a href="/arena" className="hover:text-foreground transition-colors underline underline-offset-4">
+          <a href="/arena/history" className="hover:text-foreground transition-colors underline underline-offset-4">
             {t("arena.replay")}
           </a>
         </div>

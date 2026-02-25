@@ -49,7 +49,7 @@ export function SiteHeader() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mr-8">
           <img
-            src={mounted && theme === "dark" ? "/icon-dark-32x32.png" : "/icon-light-32x32.png"}
+            src={mounted && theme === "dark" ? "/icon-light-32x32.png" : "/icon-dark-32x32.png"}
             alt="InsAgent Arena Logo"
             className="h-8 w-8"
             width={32}

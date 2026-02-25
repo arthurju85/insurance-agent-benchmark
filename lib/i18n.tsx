@@ -20,31 +20,45 @@ async function detectUserLocale(): Promise<Locale> {
     return savedLocale
   }
 
-  // 2. 尝试通过 IP 地区检测
-  try {
-    const response = await fetch("https://ipapi.co/json/", {
-      signal: AbortSignal.timeout(3000) // 3 秒超时
-    })
-    if (response.ok) {
-      const data = await response.json()
-      const countryCode = data.country_code as string
-      if (countryCode && regionToLocale[countryCode]) {
-        return regionToLocale[countryCode]
+  // 2. 尝试通过 IP 地区检测（使用多个备用 API）
+  const apis = [
+    "https://ipapi.co/json/",
+    "https://ipapi.co/ip/json/",
+    "https://api.ip.sb/geoip",
+    "https://ipwho.is/"
+  ]
+
+  for (const url of apis) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(2000) // 2 秒超时
+      })
+      if (response.ok) {
+        const data = await response.json()
+        // 不同 API 返回的字段名不同
+        const countryCode = data.country_code || data.country || ""
+        if (countryCode && regionToLocale[countryCode]) {
+          console.log(`IP 检测成功：${countryCode} -> ${regionToLocale[countryCode]}`)
+          return regionToLocale[countryCode]
+        }
       }
+    } catch (e) {
+      console.log(`IP API ${url} 失败，尝试下一个...`)
+      continue
     }
-  } catch (e) {
-    console.log("IP 地区检测失败，使用浏览器语言设置")
   }
 
   // 3. 回退到浏览器语言设置
   if (typeof navigator !== "undefined") {
     const browserLang = navigator.language.toLowerCase()
+    console.log(`IP 检测失败，使用浏览器语言：${browserLang}`)
     if (browserLang.includes("zh-hk") || browserLang.includes("zh-tw")) return "zh-TW"
     if (browserLang.includes("zh")) return "zh-CN"
     if (browserLang.includes("en")) return "en"
   }
 
   // 4. 默认简体中文
+  console.log("使用默认语言：zh-CN")
   return "zh-CN"
 }
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useI18n } from "@/lib/i18n"
 import { SiteHeader } from "@/components/site-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -29,6 +30,7 @@ import {
 
 export default function DocsPage() {
   const { t } = useI18n()
+  const [activeTab, setActiveTab] = useState("evaluation")
 
   const dimensions = [
     {
@@ -74,35 +76,46 @@ export default function DocsPage() {
     { icon: Shield, title: "合规机制", desc: "所有推荐必须通过合规检查，违规推荐将被拦截并扣分" },
   ]
 
+  const pageTitle = activeTab === "evaluation" ? t("docs.title") : t("arena.rules")
+  const pageSubtitle = activeTab === "evaluation" ? t("docs.subtitle") : "公平、透明、实时的 AI Agent 营销竞技平台"
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
       <main className="mx-auto max-w-7xl px-4 py-8 lg:px-6">
-        {/* Header */}
+        {/* Header - Centered Tabs at top */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <FileText className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground text-balance">
-                {t("docs.title")}
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {t("docs.subtitle")}
-              </p>
-            </div>
+          <div className="flex justify-center mb-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-md">
+              <TabsList className="w-full bg-muted/60">
+                <TabsTrigger value="evaluation" className="flex-1">
+                  <FileText className="h-4 w-4 mr-2" />
+                  {t("docs.title")}
+                </TabsTrigger>
+                <TabsTrigger value="arena" className="flex-1">
+                  <Swords className="h-4 w-4 mr-2" />
+                  {t("arena.rules")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {/* Dynamic Title and Subtitle based on active tab */}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground text-balance mb-2">
+              {pageTitle}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {pageSubtitle}
+            </p>
           </div>
         </div>
 
-        <Tabs defaultValue="evaluation" className="space-y-6">
-          <TabsList className="bg-muted/60">
-            <TabsTrigger value="evaluation">{t("docs.title")}</TabsTrigger>
-            <TabsTrigger value="arena">{t("arena.rules")}</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="evaluation" className="space-y-10">
+        <div className="space-y-10">
+          {/* Evaluation Methodology Content */}
+          {activeTab === "evaluation" && (
+            <>
         {/* 评测维度 */}
         <section id="evaluation-methodology">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -274,9 +287,12 @@ export default function DocsPage() {
             </CardContent>
           </Card>
         </section>
-          </TabsContent>
+          </>
+          )}
 
-          <TabsContent value="arena" className="space-y-10">
+          {/* Arena Rules Content */}
+          {activeTab === "arena" && (
+            <>
             {/* 竞技规则 */}
             <section>
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -399,14 +415,8 @@ export default function DocsPage() {
                 </Card>
               </div>
             </section>
-          </TabsContent>
-        </Tabs>
-
-        {/* Footer */}
-        <div className="mt-8 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            {t("docs.footer")} <a href="/docs" className="text-primary hover:underline">{t("docs.footer.link")}</a>
-          </p>
+            </>
+          )}
         </div>
       </main>
     </div>

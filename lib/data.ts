@@ -7,6 +7,7 @@ export interface AgentData {
   version: string
   type: "insurer" | "tech" | "opensource"
   color: string
+  logo?: string // Agent logo URL
   overallScore: number
   change: number
   scores: {
@@ -17,6 +18,46 @@ export interface AgentData {
     tools: number
   }
   history: number[] // 6 months of scores
+}
+
+// Agent Logo mapping based on vendor/name
+export function getAgentLogo(vendor: string, name: string): string {
+  const vendorLower = vendor.toLowerCase()
+  const nameLower = name.toLowerCase()
+
+  // Insurance companies
+  if (vendorLower.includes("ping") || vendorLower.includes("平安")) {
+    return "/logos/pingan.png"
+  }
+  if (vendorLower.includes("cpic") || vendorLower.includes("太保")) {
+    return "/logos/cpic.png"
+  }
+  if (vendorLower.includes("zhongan") || vendorLower.includes("众安")) {
+    return "/logos/zhongan.png"
+  }
+  if (vendorLower.includes("picc") || vendorLower.includes("人保")) {
+    return "/logos/picc.png"
+  }
+  if (vendorLower.includes("taikang") || vendorLower.includes("泰康")) {
+    return "/logos/taikang.png"
+  }
+  if (vendorLower.includes("hua") || vendorLower.includes("华泰")) {
+    return "/logos/huatai.png"
+  }
+  if (vendorLower.includes("aia") || vendorLower.includes("友邦")) {
+    return "/logos/aia.png"
+  }
+  if (vendorLower.includes("prudential") || vendorLower.includes("保诚")) {
+    return "/logos/prudential.png"
+  }
+
+  // Tech companies
+  if (vendorLower.includes("insurtech")) {
+    return "/logos/insurtech.png"
+  }
+
+  // Default - use a generic icon based on type
+  return "/icon-generic.svg"
 }
 
 export const agents: AgentData[] = [
@@ -194,6 +235,13 @@ export function generateArenaChartData() {
     "PICC Agent-D": 88,
     "TaiKang Agent-E": 87,
   }
+  const agentCustomers: Record<string, number> = {
+    "PingAn Agent-A": 0,
+    "CPIC Agent-B": 0,
+    "ZhongAn Agent-C": 0,
+    "PICC Agent-D": 0,
+    "TaiKang Agent-E": 0,
+  }
 
   for (let i = 0; i < points; i++) {
     const hour = Math.floor(i / 2)
@@ -207,7 +255,14 @@ export function generateArenaChartData() {
     agentGMVs["PICC Agent-D"] += Math.random() * 5500 + 1800
     agentGMVs["TaiKang Agent-E"] += Math.random() * 5000 + 1500
 
-    // Simulate policy volume
+    // Simulate new customers served
+    agentCustomers["PingAn Agent-A"] += Math.floor(Math.random() * 3) + 1
+    agentCustomers["CPIC Agent-B"] += Math.floor(Math.random() * 3) + 1
+    agentCustomers["ZhongAn Agent-C"] += Math.floor(Math.random() * 3) + 1
+    agentCustomers["PICC Agent-D"] += Math.floor(Math.random() * 3) + 1
+    agentCustomers["TaiKang Agent-E"] += Math.floor(Math.random() * 3) + 1
+
+    // Simulate policy volume (conversion)
     agentVolumes["PingAn Agent-A"] += Math.random() > 0.5 ? 1 : 0
     agentVolumes["CPIC Agent-B"] += Math.random() > 0.5 ? 1 : 0
     agentVolumes["ZhongAn Agent-C"] += Math.random() > 0.5 ? 1 : 0
@@ -220,6 +275,18 @@ export function generateArenaChartData() {
     agentCompliance["ZhongAn Agent-C"] = Math.min(100, Math.max(80, agentCompliance["ZhongAn Agent-C"] + (Math.random() - 0.5) * 2))
     agentCompliance["PICC Agent-D"] = Math.min(100, Math.max(80, agentCompliance["PICC Agent-D"] + (Math.random() - 0.5) * 2))
     agentCompliance["TaiKang Agent-E"] = Math.min(100, Math.max(80, agentCompliance["TaiKang Agent-E"] + (Math.random() - 0.5) * 2))
+
+    // Calculate conversion rate (volume / customers * 100)
+    const conversionPingAn = agentCustomers["PingAn Agent-A"] > 0
+      ? (agentVolumes["PingAn Agent-A"] / agentCustomers["PingAn Agent-A"]) * 100 : 0
+    const conversionCPIC = agentCustomers["CPIC Agent-B"] > 0
+      ? (agentVolumes["CPIC Agent-B"] / agentCustomers["CPIC Agent-B"]) * 100 : 0
+    const conversionZhongAn = agentCustomers["ZhongAn Agent-C"] > 0
+      ? (agentVolumes["ZhongAn Agent-C"] / agentCustomers["ZhongAn Agent-C"]) * 100 : 0
+    const conversionPICC = agentCustomers["PICC Agent-D"] > 0
+      ? (agentVolumes["PICC Agent-D"] / agentCustomers["PICC Agent-D"]) * 100 : 0
+    const conversionTaiKang = agentCustomers["TaiKang Agent-E"] > 0
+      ? (agentVolumes["TaiKang Agent-E"] / agentCustomers["TaiKang Agent-E"]) * 100 : 0
 
     data.push({
       time,
@@ -238,6 +305,11 @@ export function generateArenaChartData() {
       "ZhongAn Agent-C_compliance": Math.round(agentCompliance["ZhongAn Agent-C"]),
       "PICC Agent-D_compliance": Math.round(agentCompliance["PICC Agent-D"]),
       "TaiKang Agent-E_compliance": Math.round(agentCompliance["TaiKang Agent-E"]),
+      "PingAn Agent-A_conversion": Math.round(conversionPingAn * 10) / 10,
+      "CPIC Agent-B_conversion": Math.round(conversionCPIC * 10) / 10,
+      "ZhongAn Agent-C_conversion": Math.round(conversionZhongAn * 10) / 10,
+      "PICC Agent-D_conversion": Math.round(conversionPICC * 10) / 10,
+      "TaiKang Agent-E_conversion": Math.round(conversionTaiKang * 10) / 10,
     })
   }
   return data
