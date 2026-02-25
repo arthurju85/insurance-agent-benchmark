@@ -137,14 +137,17 @@ export function RankingTable({ agents, sortKey, compareMode }: RankingTableProps
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <img
-                          src={getAgentLogo(agent.vendor, agent.agent_name)}
+                          src={getAgentLogo(agent.vendor || "", agent.agent_name)}
                           alt={agent.agent_name}
                           className="h-6 w-6 rounded object-contain bg-white dark:bg-gray-800"
                           width={24}
                           height={24}
                           onError={(e) => {
                             // Fallback to generic icon if logo fails to load
-                            e.currentTarget.src = "/icon-generic.svg"
+                            const target = e.currentTarget
+                            if (!target.src.includes('/icon-generic.svg')) {
+                              target.src = "/icon-generic.svg"
+                            }
                           }}
                         />
                         <div className="flex flex-col">
