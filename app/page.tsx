@@ -24,6 +24,7 @@ export default function LeaderboardPage() {
   const { t } = useI18n()
   const [month, setMonth] = useState("2026-01")
   const [agentType, setAgentType] = useState("all")
+  const [region, setRegion] = useState("all")
   const [compareMode, setCompareMode] = useState(false)
   const [activeTab, setActiveTab] = useState("overall")
 
@@ -59,6 +60,15 @@ export default function LeaderboardPage() {
     agentType === "all"
       ? agents
       : agents.filter((a) => a.agent_type === agentType)
+
+  const regionFilteredAgents =
+    region === "all"
+      ? filteredAgents
+      : filteredAgents.filter((a) => {
+          if (region === "cn") return a.vendor?.includes("China") || a.vendor?.includes("Ping") || a.vendor?.includes("CPIC") || a.vendor?.includes("ZhongAn") || a.vendor?.includes("PICC") || a.vendor?.includes("Taikang")
+          if (region === "hk") return a.vendor?.includes("Hong Kong") || a.vendor?.includes("HK")
+          return true
+        })
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,6 +121,19 @@ export default function LeaderboardPage() {
                 <SelectItem value="insurer">{t("leaderboard.type.insurer")}</SelectItem>
                 <SelectItem value="tech">{t("leaderboard.type.tech")}</SelectItem>
                 <SelectItem value="opensource">{t("leaderboard.type.opensource")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Select value={region} onValueChange={setRegion}>
+              <SelectTrigger className="w-[140px] h-8 text-sm">
+                <SelectValue placeholder={t("leaderboard.region")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("leaderboard.region.all")}</SelectItem>
+                <SelectItem value="cn">{t("leaderboard.region.cn")}</SelectItem>
+                <SelectItem value="hk">{t("leaderboard.region.hk")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -171,7 +194,7 @@ export default function LeaderboardPage() {
         <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
           <span>{t("leaderboard.updated")}: 2026-01-21 00:00 UTC</span>
           <span className="text-border">|</span>
-          <a href="#" className="hover:text-foreground transition-colors underline underline-offset-4">
+          <a href="/docs#evaluation-methodology" className="hover:text-foreground transition-colors underline underline-offset-4">
             {t("leaderboard.methodology")}
           </a>
         </div>

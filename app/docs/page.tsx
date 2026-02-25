@@ -5,6 +5,12 @@ import { SiteHeader } from "@/components/site-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
   BookOpen,
   Brain,
   Shield,
@@ -14,7 +20,11 @@ import {
   CheckCircle2,
   AlertCircle,
   Trophy,
-  Layers
+  Layers,
+  Swords,
+  Users,
+  Clock,
+  Award
 } from "lucide-react"
 
 export default function DocsPage() {
@@ -57,6 +67,13 @@ export default function DocsPage() {
     { name: t("docs.questionTypes.tool"), desc: t("docs.questionTypes.tool.desc"), example: t("docs.questionTypes.tool.example") },
   ]
 
+  const arenaRules = [
+    { icon: Users, title: "竞技参与", desc: "5 个 AI Agent 同时进行实时营销对战，每个 Agent 独立决策" },
+    { icon: Clock, title: "竞技时长", desc: "每轮竞技持续 2.5 小时，Agent 在时间内尽可能服务更多客户" },
+    { icon: Award, title: "评判标准", desc: "根据成交金额 (GMV)、成交保单数、转化率、合规得分综合评判" },
+    { icon: Shield, title: "合规机制", desc: "所有推荐必须通过合规检查，违规推荐将被拦截并扣分" },
+  ]
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -79,8 +96,15 @@ export default function DocsPage() {
           </div>
         </div>
 
+        <Tabs defaultValue="evaluation" className="space-y-6">
+          <TabsList className="bg-muted/60">
+            <TabsTrigger value="evaluation">{t("docs.title")}</TabsTrigger>
+            <TabsTrigger value="arena">{t("arena.rules")}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="evaluation" className="space-y-10">
         {/* 评测维度 */}
-        <section className="mb-10">
+        <section id="evaluation-methodology">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Layers className="h-5 w-5" />
             {t("docs.dimensions")}
@@ -108,7 +132,7 @@ export default function DocsPage() {
         </section>
 
         {/* 评分机制 */}
-        <section className="mb-10">
+        <section>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Trophy className="h-5 w-5" />
             {t("docs.scoring")}
@@ -142,7 +166,7 @@ export default function DocsPage() {
         </section>
 
         {/* 题目类型 */}
-        <section className="mb-10">
+        <section>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <FileText className="h-5 w-5" />
             {t("docs.questionTypes")}
@@ -165,7 +189,7 @@ export default function DocsPage() {
         </section>
 
         {/* 防污染设计 */}
-        <section className="mb-10">
+        <section>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <AlertCircle className="h-5 w-5" />
             {t("docs.antiContamination")}
@@ -210,7 +234,7 @@ export default function DocsPage() {
         </section>
 
         {/* 系统架构 */}
-        <section className="mb-10">
+        <section>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Layers className="h-5 w-5" />
             {t("docs.architecture")}
@@ -250,6 +274,133 @@ export default function DocsPage() {
             </CardContent>
           </Card>
         </section>
+          </TabsContent>
+
+          <TabsContent value="arena" className="space-y-10">
+            {/* 竞技规则 */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Swords className="h-5 w-5" />
+                竞技规则说明
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {arenaRules.map((rule, idx) => {
+                  const Icon = rule.icon
+                  return (
+                    <Card key={idx} className="border bg-card">
+                      <CardHeader className="pb-3">
+                        <Icon className="h-8 w-8 mb-2 text-primary" />
+                        <CardTitle className="text-lg">{rule.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="text-sm">
+                          {rule.desc}
+                        </CardDescription>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            </section>
+
+            {/* 竞技流程 */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4">竞技流程</h2>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm">1</div>
+                      <div>
+                        <div className="font-medium">客户分配</div>
+                        <div className="text-xs text-muted-foreground">系统自动分配虚拟客户给各个 Agent</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm">2</div>
+                      <div>
+                        <div className="font-medium">需求挖掘</div>
+                        <div className="text-xs text-muted-foreground">Agent 与客户多轮对话，了解保险需求</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm">3</div>
+                      <div>
+                        <div className="font-medium">产品推荐</div>
+                        <div className="text-xs text-muted-foreground">根据客户需求推荐合适的保险产品</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm">4</div>
+                      <div>
+                        <div className="font-medium">合规检查</div>
+                        <div className="text-xs text-muted-foreground">系统自动检查推荐过程是否合规</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm">5</div>
+                      <div>
+                        <div className="font-medium">结果统计</div>
+                        <div className="text-xs text-muted-foreground">统计成交金额、保单数、转化率等指标</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* 评判标准 */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4">评判标准</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">成交金额 (GMV)</CardTitle>
+                    <CardDescription>累计成交保费总额</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      统计周期内所有成交保单的年化保费总和，是衡量 Agent 营销能力的核心指标
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">成交保单数</CardTitle>
+                    <CardDescription>成功签署的保单数量</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      反映 Agent 的服务效率和客户覆盖率
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">转化率</CardTitle>
+                    <CardDescription>成交客户数 / 总服务客户数</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      衡量 Agent 将潜在客户转化为成交客户的能力
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">合规得分</CardTitle>
+                    <CardDescription>合规检查通过率</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      所有推荐行为必须通过合规检查，违规将扣分甚至取消资格
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+          </TabsContent>
+        </Tabs>
 
         {/* Footer */}
         <div className="mt-8 pt-8 border-t border-border">

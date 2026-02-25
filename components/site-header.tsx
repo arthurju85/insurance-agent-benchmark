@@ -17,7 +17,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Sun, Moon, Monitor, Globe, Menu, Shield } from "lucide-react"
+import { Sun, Moon, Monitor, Globe, Menu } from "lucide-react"
 import { useState, useEffect } from "react"
 
 const localeLabels = (t: (key: string) => string) => ({
@@ -28,7 +28,7 @@ const localeLabels = (t: (key: string) => string) => ({
 
 export function SiteHeader() {
   const pathname = usePathname()
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const { locale, setLocale, t } = useI18n()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -48,9 +48,13 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center px-4 lg:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mr-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Shield className="h-4 w-4 text-primary-foreground" />
-          </div>
+          <img
+            src={mounted && theme === "dark" ? "/icon-dark-32x32.png" : "/icon-light-32x32.png"}
+            alt="InsAgent Arena Logo"
+            className="h-8 w-8"
+            width={32}
+            height={32}
+          />
           <span className="text-lg font-bold tracking-tight text-foreground">
             InsAgent Arena
           </span>

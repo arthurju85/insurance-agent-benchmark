@@ -180,9 +180,23 @@ export function generateArenaChartData() {
     "PICC Agent-D": 0,
     "TaiKang Agent-E": 0,
   }
+  const agentVolumes: Record<string, number> = {
+    "PingAn Agent-A": 0,
+    "CPIC Agent-B": 0,
+    "ZhongAn Agent-C": 0,
+    "PICC Agent-D": 0,
+    "TaiKang Agent-E": 0,
+  }
+  const agentCompliance: Record<string, number> = {
+    "PingAn Agent-A": 95,
+    "CPIC Agent-B": 92,
+    "ZhongAn Agent-C": 90,
+    "PICC Agent-D": 88,
+    "TaiKang Agent-E": 87,
+  }
 
   for (let i = 0; i < points; i++) {
-    const hour = Math.floor(i / 2) + 9
+    const hour = Math.floor(i / 2)
     const min = (i % 2) * 30
     const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`
 
@@ -193,6 +207,20 @@ export function generateArenaChartData() {
     agentGMVs["PICC Agent-D"] += Math.random() * 5500 + 1800
     agentGMVs["TaiKang Agent-E"] += Math.random() * 5000 + 1500
 
+    // Simulate policy volume
+    agentVolumes["PingAn Agent-A"] += Math.random() > 0.5 ? 1 : 0
+    agentVolumes["CPIC Agent-B"] += Math.random() > 0.5 ? 1 : 0
+    agentVolumes["ZhongAn Agent-C"] += Math.random() > 0.5 ? 1 : 0
+    agentVolumes["PICC Agent-D"] += Math.random() > 0.5 ? 1 : 0
+    agentVolumes["TaiKang Agent-E"] += Math.random() > 0.5 ? 1 : 0
+
+    // Slight fluctuation in compliance
+    agentCompliance["PingAn Agent-A"] = Math.min(100, Math.max(80, agentCompliance["PingAn Agent-A"] + (Math.random() - 0.5) * 2))
+    agentCompliance["CPIC Agent-B"] = Math.min(100, Math.max(80, agentCompliance["CPIC Agent-B"] + (Math.random() - 0.5) * 2))
+    agentCompliance["ZhongAn Agent-C"] = Math.min(100, Math.max(80, agentCompliance["ZhongAn Agent-C"] + (Math.random() - 0.5) * 2))
+    agentCompliance["PICC Agent-D"] = Math.min(100, Math.max(80, agentCompliance["PICC Agent-D"] + (Math.random() - 0.5) * 2))
+    agentCompliance["TaiKang Agent-E"] = Math.min(100, Math.max(80, agentCompliance["TaiKang Agent-E"] + (Math.random() - 0.5) * 2))
+
     data.push({
       time,
       "PingAn Agent-A": Math.round(agentGMVs["PingAn Agent-A"]),
@@ -200,6 +228,16 @@ export function generateArenaChartData() {
       "ZhongAn Agent-C": Math.round(agentGMVs["ZhongAn Agent-C"]),
       "PICC Agent-D": Math.round(agentGMVs["PICC Agent-D"]),
       "TaiKang Agent-E": Math.round(agentGMVs["TaiKang Agent-E"]),
+      "PingAn Agent-A_volume": agentVolumes["PingAn Agent-A"],
+      "CPIC Agent-B_volume": agentVolumes["CPIC Agent-B"],
+      "ZhongAn Agent-C_volume": agentVolumes["ZhongAn Agent-C"],
+      "PICC Agent-D_volume": agentVolumes["PICC Agent-D"],
+      "TaiKang Agent-E_volume": agentVolumes["TaiKang Agent-E"],
+      "PingAn Agent-A_compliance": Math.round(agentCompliance["PingAn Agent-A"]),
+      "CPIC Agent-B_compliance": Math.round(agentCompliance["CPIC Agent-B"]),
+      "ZhongAn Agent-C_compliance": Math.round(agentCompliance["ZhongAn Agent-C"]),
+      "PICC Agent-D_compliance": Math.round(agentCompliance["PICC Agent-D"]),
+      "TaiKang Agent-E_compliance": Math.round(agentCompliance["TaiKang Agent-E"]),
     })
   }
   return data

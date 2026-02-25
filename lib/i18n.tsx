@@ -1,8 +1,52 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 
 export type Locale = "zh-CN" | "zh-TW" | "en"
+
+// 地区代码到语言环境的映射
+const regionToLocale: Record<string, Locale> = {
+  "CN": "zh-CN",      // 中国大陆
+  "HK": "zh-TW",      // 中国香港
+  "MO": "zh-TW",      // 中国澳门
+  "TW": "zh-TW",      // 中国台湾
+}
+
+// 尝试检测用户地区
+async function detectUserLocale(): Promise<Locale> {
+  // 1. 首先尝试从 localStorage 获取用户之前选择的语言
+  const savedLocale = localStorage.getItem("locale") as Locale | null
+  if (savedLocale && ["zh-CN", "zh-TW", "en"].includes(savedLocale)) {
+    return savedLocale
+  }
+
+  // 2. 尝试通过 IP 地区检测
+  try {
+    const response = await fetch("https://ipapi.co/json/", {
+      signal: AbortSignal.timeout(3000) // 3 秒超时
+    })
+    if (response.ok) {
+      const data = await response.json()
+      const countryCode = data.country_code as string
+      if (countryCode && regionToLocale[countryCode]) {
+        return regionToLocale[countryCode]
+      }
+    }
+  } catch (e) {
+    console.log("IP 地区检测失败，使用浏览器语言设置")
+  }
+
+  // 3. 回退到浏览器语言设置
+  if (typeof navigator !== "undefined") {
+    const browserLang = navigator.language.toLowerCase()
+    if (browserLang.includes("zh-hk") || browserLang.includes("zh-tw")) return "zh-TW"
+    if (browserLang.includes("zh")) return "zh-CN"
+    if (browserLang.includes("en")) return "en"
+  }
+
+  // 4. 默认简体中文
+  return "zh-CN"
+}
 
 const translations: Record<Locale, Record<string, string>> = {
   "zh-CN": {
@@ -28,7 +72,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "leaderboard.month": "评测月份",
     "leaderboard.type": "Agent 类型",
     "leaderboard.type.all": "全部",
-    "leaderboard.type.insurer": "保险公司自研",
+    "leaderboard.type.insurer": "保险机构自研",
     "leaderboard.type.tech": "科技公司",
     "leaderboard.type.opensource": "开源",
     "leaderboard.updated": "数据更新时间",
@@ -113,14 +157,16 @@ const translations: Record<Locale, Record<string, string>> = {
     "submit.success": "提交成功",
     "submit.review": "技术团队将在 5 个工作日内联络您",
     "submit.rateLimit": "24 小时内最多提交 3 次",
-    "submit.agentType.insurer": "保险公司自研",
+    "submit.agentType.insurer": "保险机构自研",
     "submit.agentType.tech": "科技公司",
     "submit.agentType.opensource": "开源",
     "submit.model.openai": "OpenAI",
     "submit.model.azure": "Azure OpenAI",
-    "submit.model.vllm": "vLLM",
-    "submit.model.claude": "Claude",
-    "submit.model.gemini": "Gemini",
+    "submit.model.vllm": "vLLM (开源框架)",
+    "submit.model.claude": "Anthropic Claude",
+    "submit.model.gemini": "Google Gemini",
+    "submit.model.deepseek": "DeepSeek (深度求索)",
+    "submit.model.qwen": "Qwen (通义千问)",
     "submit.model.other": "其他",
     "submit.process.title": "提交流程：",
     "submit.process.1": "填写并提交申请表",
@@ -209,7 +255,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "leaderboard.month": "評測月份",
     "leaderboard.type": "Agent 類型",
     "leaderboard.type.all": "全部",
-    "leaderboard.type.insurer": "保險公司自研",
+    "leaderboard.type.insurer": "保險機構自研",
     "leaderboard.type.tech": "科技公司",
     "leaderboard.type.opensource": "開源",
     "leaderboard.updated": "數據更新時間",
@@ -294,14 +340,16 @@ const translations: Record<Locale, Record<string, string>> = {
     "submit.success": "提交成功",
     "submit.review": "技術團隊將在 5 個工作日內聯絡您",
     "submit.rateLimit": "24 小時內最多提交 3 次",
-    "submit.agentType.insurer": "保險公司自研",
+    "submit.agentType.insurer": "保險機構自研",
     "submit.agentType.tech": "科技公司",
     "submit.agentType.opensource": "開源",
     "submit.model.openai": "OpenAI",
     "submit.model.azure": "Azure OpenAI",
-    "submit.model.vllm": "vLLM",
-    "submit.model.claude": "Claude",
-    "submit.model.gemini": "Gemini",
+    "submit.model.vllm": "vLLM (開源框架)",
+    "submit.model.claude": "Anthropic Claude",
+    "submit.model.gemini": "Google Gemini",
+    "submit.model.deepseek": "DeepSeek (深度求索)",
+    "submit.model.qwen": "Qwen (通義千問)",
     "submit.model.other": "其他",
     "submit.process.title": "提交流程：",
     "submit.process.1": "填寫並提交申請表",
@@ -390,6 +438,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "leaderboard.month": "Eval Month",
     "leaderboard.type": "Agent Type",
     "leaderboard.type.all": "All",
+    "leaderboard.region": "地区",
+    "leaderboard.region.all": "全部",
+    "leaderboard.region.cn": "中国大陆",
+    "leaderboard.region.hk": "中国香港",
     "leaderboard.type.insurer": "Insurer",
     "leaderboard.type.tech": "Tech Company",
     "leaderboard.type.opensource": "Open Source",
@@ -480,9 +532,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "submit.agentType.opensource": "Open Source",
     "submit.model.openai": "OpenAI",
     "submit.model.azure": "Azure OpenAI",
-    "submit.model.vllm": "vLLM",
-    "submit.model.claude": "Claude",
-    "submit.model.gemini": "Gemini",
+    "submit.model.vllm": "vLLM (Open Source)",
+    "submit.model.claude": "Anthropic Claude",
+    "submit.model.gemini": "Google Gemini",
+    "submit.model.deepseek": "DeepSeek",
+    "submit.model.qwen": "Qwen (Alibaba)",
     "submit.model.other": "Other",
     "submit.process.title": "Submission Process:",
     "submit.process.1": "Fill out and submit application",
@@ -559,11 +613,26 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | null>(null)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("zh-CN")
+  const [locale, setLocaleState] = useState<Locale>("zh-CN")
+  const [initialized, setInitialized] = useState(false)
+
+  useEffect(() => {
+    detectUserLocale().then((detectedLocale) => {
+      setLocaleState(detectedLocale)
+      setInitialized(true)
+    })
+  }, [])
+
+  const setLocale = (newLocale: Locale) => {
+    localStorage.setItem("locale", newLocale)
+    setLocaleState(newLocale)
+  }
+
   const t = useCallback(
     (key: string) => translations[locale]?.[key] ?? key,
     [locale]
   )
+
   return (
     <I18nContext.Provider value={{ locale, setLocale, t }}>
       {children}

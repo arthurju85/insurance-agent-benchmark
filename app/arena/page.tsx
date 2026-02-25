@@ -158,15 +158,15 @@ export default function ArenaPage() {
 
         {/* Footer */}
         <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-          <a href="#" className="hover:text-foreground transition-colors underline underline-offset-4">
+          <a href="/docs#arena-rules" className="hover:text-foreground transition-colors underline underline-offset-4">
             {t("arena.rules")}
           </a>
           <span className="text-border">|</span>
-          <a href="#" className="hover:text-foreground transition-colors underline underline-offset-4">
+          <a href="/docs#evaluation-methodology" className="hover:text-foreground transition-colors underline underline-offset-4">
             {t("arena.scenarios")}
           </a>
           <span className="text-border">|</span>
-          <a href="#" className="hover:text-foreground transition-colors underline underline-offset-4">
+          <a href="/arena" className="hover:text-foreground transition-colors underline underline-offset-4">
             {t("arena.replay")}
           </a>
         </div>

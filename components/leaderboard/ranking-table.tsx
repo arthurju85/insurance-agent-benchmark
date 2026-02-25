@@ -134,11 +134,20 @@ export function RankingTable({ agents, sortKey, compareMode }: RankingTableProps
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-foreground text-sm">{agent.agent_name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {agent.vendor} &middot; {agent.version}
-                        </span>
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={`/icon-${i % 2 === 0 ? "light" : "dark"}-32x32.png`}
+                          alt={agent.agent_name}
+                          className="h-6 w-6 rounded"
+                          width={24}
+                          height={24}
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-foreground text-sm">{agent.agent_name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {agent.vendor} &middot; {agent.version}
+                          </span>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell className="text-right">

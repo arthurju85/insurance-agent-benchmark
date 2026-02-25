@@ -60,9 +60,23 @@ export function LiveChart({ metric }: LiveChartProps) {
     })
   }
 
+  const getDataKey = (name: string) => {
+    if (metric === "volume") return `${name}_volume`
+    if (metric === "compliance") return `${name}_compliance`
+    return name
+  }
+
   const formatY = (val: number) => {
+    if (metric === "compliance") return `${val}%`
+    if (metric === "volume") return val.toString()
     if (val >= 10000) return `${(val / 10000).toFixed(0)}${t("unit.wan")}`
     return val.toLocaleString()
+  }
+
+  const formatTooltip = (value: number) => {
+    if (metric === "compliance") return [`${value}%`, undefined]
+    if (metric === "volume") return [`${value} 保单`, undefined]
+    return [`¥${value.toLocaleString()}`, undefined]
   }
 
   return (
@@ -111,13 +125,13 @@ export function LiveChart({ metric }: LiveChartProps) {
                 color: "oklch(0.95 0.005 240)",
               }}
               labelStyle={{ color: "oklch(0.6 0.02 240)" }}
-              formatter={(value: number) => [`¥${value.toLocaleString()}`, undefined]}
+              formatter={formatTooltip}
             />
             {agentKeys.map((name, i) => (
               <Line
                 key={name}
                 type="monotone"
-                dataKey={name}
+                dataKey={getDataKey(name)}
                 stroke={colors[i]}
                 strokeWidth={hiddenAgents.has(name) ? 0 : 2.5}
                 dot={false}
@@ -126,6 +140,8 @@ export function LiveChart({ metric }: LiveChartProps) {
               />
             ))}
             <Legend
+              iconType="circle"
+              iconSize={10}
               onClick={(e) => {
                 if (typeof e.value === "string") toggleAgent(e.value)
               }}
