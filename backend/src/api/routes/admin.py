@@ -10,17 +10,27 @@ from typing import List, Optional
 import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 try:
     from ..api.admin import (
-        QuestionManager, EvaluationMonitor, SystemManager, SubmissionManager, get_admin_dashboard
+        QuestionManager, EvaluationMonitor, SystemManager, SubmissionManager, get_admin_dashboard, LoginRequest, login_user
     )
 except ImportError:
     import sys
     import os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
     from api.admin import (
-        QuestionManager, EvaluationMonitor, SystemManager, SubmissionManager, get_admin_dashboard
+        QuestionManager, EvaluationMonitor, SystemManager, SubmissionManager, get_admin_dashboard, LoginRequest, login_user
     )
 
 router = APIRouter()
+
+
+# ========== 登录认证 ==========
+
+@router.post("/login")
+async def login(request: LoginRequest):
+    """
+    用户登录
+    """
+    return login_user(request)
 
 
 # ========== 仪表盘 ==========

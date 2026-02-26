@@ -434,6 +434,61 @@ class SystemManager:
         return True
 
 
+# ========== 登录认证 ==========
+
+from fastapi import HTTPException
+from pydantic import BaseModel
+
+
+class LoginRequest(BaseModel):
+    """登录请求"""
+    username: str
+    password: str
+
+
+# 简单的用户认证（生产环境应该使用数据库和密码哈希）
+ADMIN_USERS = {
+    "admin": "admin123",  # 管理员账号
+    "user": "user123",    # 普通用户账号
+}
+
+
+def authenticate_user(username: str, password: str) -> Optional[str]:
+    """
+    验证用户密码
+    返回 role 如果验证成功，否则返回 None
+    """
+    if username in ADMIN_USERS and ADMIN_USERS[username] == password:
+        return "admin" if username == "admin" else "user"
+    return None
+
+
+def login_user(request: LoginRequest) -> dict:
+    """
+    用户登录
+    """
+    role = authenticate_user(request.username, request.password)
+
+    if not role:
+        raise HTTPException(status_code=401, detail="用户名或密码错误")
+
+    # 生成简单的 token（生产环境应该使用 JWT）
+    import base64
+    import time
+
+    token_data = base64.b64encode(
+        f"{request.username}:{role}:{int(time.time())}".encode()
+    ).decode()
+
+    return {
+        "token": token_data,
+        "user": {
+            "username": request.username,
+            "role": role,
+        }
+    }
+
+
 # 便捷函数
 def get_admin_dashboard() -> Dict:
     """获取管理员仪表盘数据"""
